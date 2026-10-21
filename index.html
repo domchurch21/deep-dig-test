@@ -187,6 +187,7 @@ const MIGRATION_DEMO=new URLSearchParams(location.search).get('migrationDemo')==
 const STORE=MIGRATION_DEMO?'deepdig_rc2_demo_progress':'deepdig_rc2_v015_progress', OLD_STORE='deepdig_rc2_legacy_unused',TREASURE_STORE=MIGRATION_DEMO?'deepdig_rc2_demo_treasure':'deepdig_rc2_v015_treasure';
 const TARGETS={"1":[190,250],"2":[190,260],"3":[190,240],"4":[190,230],"5":[190,260],"6":[200,260],"7":[170,220],"8":[190,250],"9":[170,230],"10":[120,160]};
 Object.assign(TARGETS,{"11":[90,150],"12":[90,150],"13":[90,150],"14":[90,150],"15":[90,150],"16":[90,150],"17":[90,150],"18":[90,150],"19":[90,150],"20":[90,150],"21":[90,150],"22":[90,150],"23":[90,150],"24":[90,150],"25":[90,150]});
+const WORKSHOP_STORE=MIGRATION_DEMO?'deepdig_rc2_demo_workshop':'deepdig_rc2_v015_workshop';
 // RC2 migration: read old data, never alter source keys; each destination is initialized only once.
 (function migrateV014(){
  const sampleProgress={unlocked:8,best:{"1":260,"2":210,"3":185,"4":230,"5":200,"6":180,"7":155},stars:{"1":3,"2":2,"3":1,"4":2,"5":2,"6":1,"7":1}};
@@ -232,7 +233,7 @@ const WORKSHOP_PREVIEW=[
  {icon:'🎒',name:'ENERGIERUCKSACK',desc:'Beginne eine Mine mit etwas mehr Energie.',prices:[50,120,220],effects:['21 Startenergie','22 Startenergie','23 Startenergie']},
  {icon:'🏮',name:'GOLDLATERNE',desc:'Mehr Gold aus neuen Goldfeldern. Bereits gesammeltes Gold bleibt unverändert.',prices:[80,170,300],effects:['6 Gold / Feld','7 Gold / Feld','8 Gold / Feld']}
 ];
-const WORKSHOP_STORE=MIGRATION_DEMO?'deepdig_rc2_demo_workshop':'deepdig_rc2_v015_workshop';
+
 const WORKSHOP_IDS=['pickaxe','backpack','lantern'];
 let workshopLevels={pickaxe:0,backpack:0,lantern:0};
 function upgradeTier(id){return workshopLevels[id]}
