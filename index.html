@@ -1,0 +1,490 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#171b2b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Deep Dig! – v0.15 TEST 2 · DEV</title><style>*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0%,#292f45 0%,#171b2b 65%);color:#f6e7c9;font-family:ui-monospace,Menlo,Consolas,monospace;display:flex;justify-content:center}main{width:min(100%,510px);padding:14px}h1{margin:7px 0;color:#ffd46b;font-size:27px;text-shadow:3px 3px #713f38}.sub,.note{font-size:12px;color:#b7b4c5;margin-bottom:12px}.levels{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}.levels button,.action{background:#3c4059;color:#f6e7c9;border:2px solid #6d6a80;padding:9px 3px;font:700 12px ui-monospace,monospace;cursor:pointer}.levels button.active{background:#e5b54c;color:#282031;border-color:#ffe09b}.levels button:disabled{opacity:.4;cursor:not-allowed}.levels small{display:block;font-size:11px;margin-top:3px;color:#ffd46b}.levels button.active small{color:#4b3b24}.goals{font-size:12px;line-height:1.5;background:#30354b;border-left:3px solid #e5b54c;padding:8px 10px;margin-bottom:10px;color:#ffe4a3}.hud{display:flex;justify-content:space-between;background:#282c40;border:3px solid #55536a;padding:10px;margin-bottom:12px;font-weight:bold;font-size:13px}.board{box-shadow:0 9px 0 #0e1020,0 16px 24px #090b13;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:1px;background:#11121d;padding:4px;border:3px solid #655c65;touch-action:manipulation}.cell{position:relative;overflow:hidden;image-rendering:pixelated;aspect-ratio:1;min-width:0;display:grid;place-items:center;font-size:clamp(16px,5vw,26px);border:0;border-radius:2px;cursor:pointer;color:white;user-select:none;padding:0}.dirt{background:#765037}.rock{background:#535b6d}.gold{background:#a67828}.gem{background:#376f78}.energy{background:#4e8659}.hidden{background:#765037;box-shadow:inset 0 0 0 2px #b89157;color:#d6bb8e;text-shadow:0 0 4px #edca87}.empty{background:#252538}.player{background:#263d6c;box-shadow:inset 0 0 0 3px #e7c15a}.cell.lava:before{content:"";position:absolute;width:14%;height:14%;border-radius:50%;background:#ffe6a0;top:45%;left:20%;box-shadow:12px 7px 0 #ffcf64;animation:bubble 1.8s steps(4,end) infinite;z-index:1;pointer-events:none}.cell.lava:nth-child(3n):before{animation-delay:-.6s;left:58%}.cell.lava:nth-child(5n):before{animation-delay:-1.1s}@keyframes bubble{0%{opacity:0;transform:translateY(8px) scale(.4)}25%{opacity:1}75%{opacity:.8}100%{opacity:0;transform:translateY(-14px) scale(1.2)}}.cell canvas{display:block;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}.player canvas{animation:none}.player.swing canvas{animation:none}@keyframes miner-swing{0%{transform:rotate(-9deg)}50%{transform:rotate(9deg) translateX(2px)}100%{transform:rotate(0)}}.cell.reachable:after{content:"";position:absolute;inset:2px;border:2px dashed #f8e9a0;pointer-events:none}@keyframes miner-bob{50%{transform:translateY(-2px)}}.reachable{outline:2px solid #f8e9a0;outline-offset:-3px}.exit{background:#725294}.lava{background:#ad3d20}.monster{background:#67427c}.status{min-height:45px;font-size:13px;margin:12px 0;color:#e6cba0;line-height:1.5}.action{background:#e5b54c;color:#282031;border:0;padding:12px 15px;box-shadow:4px 4px #86572e;margin-right:8px;margin-bottom:9px}.action:disabled{opacity:.4}.board-wrap{position:relative}.summary{position:absolute;inset:0;z-index:5;border:3px solid #e5b54c;background:rgba(20,22,37,.95);padding:clamp(10px,3vw,22px);margin:0;display:flex;flex-direction:column;justify-content:center;overflow:auto;box-shadow:inset 0 0 0 4px #24263d}.overlay-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.overlay-actions .action{flex:1 1 140px;margin:0;font-size:11px}.summary .resultline{padding:7px 0}.board-wrap:has(.summary:not([hidden])) .board{filter:brightness(.45)}.summary[hidden]{display:none}.summary h2{font-size:15px;color:#ffd46b;margin:0 0 12px}.resultline{display:flex;justify-content:space-between;padding:5px 0;font-size:13px}.footer{font-size:12px;line-height:1.7;color:#b6b5c6;margin-top:16px}.footer b{color:#f7dfab}.notice{font-size:12px;color:#f5dba4}.audio-panel{border:2px solid #655c65;background:#252a3e;padding:10px 12px;margin:10px 0 14px}.audio-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.audio-head strong{font-size:13px;color:#ffd46b}.audio-toggle{border:2px solid #e5b54c;background:#3b3c55;color:#ffe5a7;font:700 11px ui-monospace,monospace;padding:7px 9px;cursor:pointer}.audio-row{display:grid;grid-template-columns:78px minmax(0,1fr) 38px;align-items:center;gap:9px;margin:7px 0;font-size:12px}.audio-row input{width:100%;accent-color:#e5b54c;cursor:pointer}.audio-row output{text-align:right;color:#ffe4a3}.audio-diagnostics{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px;font-size:11px;color:#ffe4a3}.audio-tip{font-size:10px;color:#b7b4c5;margin-top:8px;line-height:1.4}@media(prefers-reduced-motion:reduce){.cell.lava:before{animation:none}}
+/* v0.11 mobile-first full-screen navigation */
+html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{display:block;background:#171b2b}main{width:100%;max-width:none;height:100dvh;padding:0;overflow:hidden;display:block}.screen{height:100dvh;width:100%;overflow:hidden;display:none;flex-direction:column;align-items:center;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));gap:10px}.screen.active{display:flex}.screen-header{width:100%;max-width:460px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-shrink:0}.screen-title{color:#ffd46b;font-weight:900;font-size:clamp(19px,5vw,27px);text-shadow:2px 2px #713f38}.screen-sub{font-size:11px;color:#b7b4c5}.home-center{width:min(100%,420px);margin:auto 0;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}.hero-logo{font-size:clamp(35px,10vw,60px);line-height:1.2;color:#ffd46b;text-shadow:4px 4px #713f38;font-weight:900}.hero-emoji{font-size:68px}.menu-btn{border:2px solid #ffe09b;background:#e5b54c;color:#282031;padding:15px 18px;min-height:52px;width:min(100%,300px);font:900 16px ui-monospace,monospace;box-shadow:4px 4px #86572e;cursor:pointer}.menu-btn.secondary{background:#3c4059;color:#ffe4a3;border-color:#6d6a80;box-shadow:3px 3px #202336}.tiny{font-size:11px;color:#b7b4c5;line-height:1.5;text-align:center}.screen-content{width:min(100%,460px);min-height:0;overflow:auto;overscroll-behavior:contain}.levels{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:10px 0}.levels button{min-height:70px;font-size:18px}.levels small{font-size:12px}.audio-panel{width:100%;margin:8px 0 0}.settings-body{flex:1;min-height:0;overflow:auto;width:min(100%,460px)}.game-screen{gap:6px;padding-left:8px;padding-right:8px}.game-screen .screen-header{max-width:480px;min-height:35px}.game-screen .hud{width:min(100%,480px);padding:7px 8px;margin:0;font-size:12px;flex-shrink:0}.game-screen .goals{font-size:10px;padding:4px 7px;margin:0;width:min(100%,480px);line-height:1.3;flex-shrink:0}.game-screen .board-wrap{width:min(100%,calc((100dvh - 230px) * 0.66667),480px);min-width:0;min-height:0;flex-shrink:1;margin:0 auto}.game-screen .board{width:100%;padding:2px;gap:1px;box-shadow:none}.game-screen .cell{font-size:12px}.game-screen .status{min-height:0;margin:4px 0 0;font-size:10px;line-height:1.25;text-align:center}.game-actions{width:min(100%,480px);display:flex;gap:8px;justify-content:center;flex-shrink:0}.game-actions .action{margin:0;flex:1;padding:9px 4px;font-size:10px;min-height:38px;box-shadow:2px 2px #86572e}.summary{overflow:auto;padding:10px}.summary .resultline{padding:4px 0;font-size:11px}.summary h2{font-size:13px;margin-bottom:5px}.summary .notice{font-size:10px;margin:5px 0}.overlay-actions{margin-top:6px;gap:6px}.overlay-actions .action{flex:1 1 120px;padding:8px 4px;min-height:36px}.help{font-size:12px;line-height:1.7;color:#f6e7c9}.help b{color:#ffd46b}@media(max-height:720px){.screen{gap:4px}.game-screen .board-wrap{width:min(100%,calc((100dvh - 205px) * 0.66667),480px)}.game-screen .screen-header{min-height:28px}.game-screen .goals{font-size:9px}.game-screen .status{font-size:9px}.game-actions .action{min-height:32px;padding:6px 2px}}@media(min-width:600px){.game-screen .board-wrap{width:min(100%,calc((100dvh - 230px) * 0.66667),480px)}}
+
+/* v0.11.1 – sharper headings and compact goal strip on narrow phones */
+.screen-title,.hero-logo{ text-shadow:none; -webkit-font-smoothing:antialiased; }
+.screen-title{font-size:clamp(17px,4.35vw,24px);letter-spacing:-.035em;line-height:1.1;text-align:right;white-space:nowrap;}
+.hero-logo{font-size:clamp(34px,9vw,58px);letter-spacing:-.04em;}
+.game-screen .goals{white-space:nowrap;overflow:hidden;text-overflow:clip;font-size:clamp(9px,2.5vw,11px);letter-spacing:-.025em;line-height:1.4;}
+.game-screen .screen-header{gap:5px;}
+.game-screen .screen-header .audio-toggle{flex-shrink:0;}
+.game-actions .action{overflow-wrap:anywhere;line-height:1.15;}
+@media(max-width:360px){.game-screen .goals{font-size:9px}.game-actions .action{font-size:9px}.screen-title{font-size:clamp(15px,4vw,19px)}.audio-toggle{font-size:10px;padding:6px}}
+
+/* v0.12 isolated tutorial preview */
+.tutorial-panel{position:absolute;z-index:7;left:5px;right:5px;bottom:6px;background:#22273bf5;border:2px solid #f3ce79;box-shadow:0 4px 0 #111321;padding:10px 11px;color:#f6e7c9;max-height:75%;overflow:auto}.tutorial-panel[hidden]{display:none}.tutorial-title{font-weight:900;font-size:13px;color:#ffd46b;margin-bottom:5px}.tutorial-text{font-size:12px;line-height:1.45}.tutorial-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:8px;font-size:11px}.tutorial-legend span{background:#363c52;padding:5px 4px}.tutorial-buttons{display:flex;gap:7px;margin-top:10px}.tutorial-buttons button{flex:1;min-height:38px;font:800 11px ui-monospace,monospace;border:2px solid #8d7890;background:#44435d;color:#ffe6ad}.tutorial-buttons button.primary{background:#e5b54c;border-color:#ffe09b;color:#282031}.tutorial-move .cell.reachable{animation:tutorial-pulse 1.1s ease-in-out infinite;outline:3px solid #fff1a6;outline-offset:-3px}@keyframes tutorial-pulse{50%{filter:brightness(1.55)}}.tutorial-highlight{outline:2px solid #f9d676;outline-offset:2px}@media(max-height:670px){.tutorial-panel{padding:7px 9px}.tutorial-text{font-size:11px}.tutorial-legend{font-size:10px;gap:3px}.tutorial-buttons{margin-top:6px}}@media(prefers-reduced-motion:reduce){.tutorial-move .cell.reachable{animation:none}}
+
+/* v0.13 mine world selection and color themes */
+.world-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0}.world-tab{font:800 10px ui-monospace,monospace;line-height:1.4;min-height:49px;padding:7px 4px;border:2px solid #55536a;background:#282c40;color:#d9d9e7;cursor:pointer}.world-tab.selected{background:#e5b54c;border-color:#fff0b1;color:#292334}.levels[data-theme="copper"] button:not(:disabled){background:#97573b}.levels[data-theme="crystal"] button:not(:disabled){background:#48679d}.levels[data-theme="volcano"] button:not(:disabled){background:#a34b39}body[data-mine-theme="copper"] .board{border-color:#ad7651}body[data-mine-theme="copper"] .dirt{background:#92553d}body[data-mine-theme="crystal"] .board{border-color:#6878bd}body[data-mine-theme="crystal"] .dirt{background:#48577e}body[data-mine-theme="crystal"] .gem{background:#3e8bba}body[data-mine-theme="volcano"] .board{border-color:#b45435}body[data-mine-theme="volcano"] .dirt{background:#604349}body[data-mine-theme="volcano"] .rock{background:#3d3e50}@media(max-width:380px){.world-tab{font-size:9px;padding:6px 2px}}
+/* v0.14 phase 1: currency and result feedback */
+.gold-pop{position:absolute;z-index:8;top:16%;left:50%;transform:translateX(-50%);padding:8px 12px;background:#332b20;color:#ffe18a;border:2px solid #e6b956;font-weight:900;pointer-events:none;animation:gold-rise 1.15s ease-out forwards}@keyframes gold-rise{0%{opacity:0;transform:translate(-50%,12px) scale(.8)}20%{opacity:1;transform:translate(-50%,0) scale(1.1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-30px)}}.gold-wallet{color:#ffdb77;font-weight:900}.reward-line{color:#ffe19a}.reward-line strong{color:#fff0b8}
+/* v0.14 camp */
+.camp-content{width:min(100%,460px);min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;padding:5px 3px 22px;display:flex;flex-direction:column;gap:13px}.camp-banner{background:linear-gradient(155deg,#43382d,#262a3e);border:2px solid #b18b54;padding:17px 12px;text-align:center;box-shadow:3px 3px #121622}.camp-art{font-size:42px;letter-spacing:5px;line-height:1.3}.camp-banner h2{margin:7px 0 3px;color:#ffe0a0;font-size:17px}.camp-panel{background:#252b3d;border:2px solid #626078;padding:13px 12px;box-shadow:3px 3px #141827}.camp-panel h3{margin:0 0 9px;color:#ffdc87;font-size:14px}.camp-wallet{font-size:27px;color:#ffe28d;font-weight:900;text-align:center;padding:10px 0 6px}.camp-muted{font-size:11px;color:#bcb9c8;line-height:1.6;margin:4px 0}.camp-relics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:10px 0}.camp-relic{aspect-ratio:1;display:grid;place-items:center;background:#1b2030;border:2px solid #4b4c60;font-size:22px;color:#79778b}.camp-pill{display:inline-block;color:#ffe4a3;background:#424057;padding:5px 8px;font-size:11px}.camp-coming{border:1px dashed #7b7080;padding:11px;margin-top:5px;font-size:12px;color:#d8cdb8}.camp-back{width:min(100%,460px);flex-shrink:0}
+.workshop-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.workshop-head h3{margin-bottom:0}.workshop-tag{font-size:9px;color:#f5d896;border:1px solid #ad8b4c;padding:5px;white-space:nowrap}.workshop-items{display:grid;gap:10px;margin-top:12px}.workshop-item{display:grid;grid-template-columns:42px minmax(0,1fr);gap:9px;background:#1b2030;border:1px solid #5b586d;padding:10px}.workshop-icon{font-size:27px;display:grid;place-items:center;background:#353347;border:1px solid #6e6675;min-height:43px}.workshop-name{font-weight:900;font-size:12px;color:#ffe4a3}.workshop-description{font-size:10px;color:#c8c1cb;line-height:1.5;margin:5px 0}.workshop-levels{display:flex;gap:5px;margin:7px 0}.workshop-level{font-size:10px;flex:1;text-align:center;padding:4px 2px;border:1px solid #62566a;color:#b7aabd}.workshop-price{font-size:11px;color:#f8d78b}.workshop-buy{width:100%;margin-top:8px;border:1px solid #786f80;background:#393849;color:#a9a2b4;font-size:11px;font-weight:800;padding:9px;cursor:not-allowed}.workshop-note{font-size:10px;line-height:1.5;color:#d4bd8d;margin:11px 0 0}
+.gold-coin{display:inline-block;vertical-align:-2px;width:16px;height:16px;border:2px solid #8c4e13;border-radius:50%;background:radial-gradient(circle at 35% 28%,#fff1a4 0 16%,#ffd348 32%,#e99b19 68%,#a85c12 100%);box-shadow:inset 0 0 0 2px #f6c443,1px 2px 0 #52351d}.workshop-buy:not(:disabled){cursor:pointer;background:#b77828;border-color:#f8d480;color:#231c18;box-shadow:2px 2px #151621}.workshop-buy:focus-visible{outline:3px solid #ffe18d}.workshop-level.owned{background:#394d3a;color:#c5f5a9;border-color:#79a36e}.workshop-message{font-size:11px;color:#f4d99a;line-height:1.5;margin:8px 0}.workshop-message:empty{display:none}
+.dev-mode-note{font-size:10px;color:#ffe6a6;line-height:1.5;text-align:center;padding:4px 8px}
+/* v0.14 relic discoveries */
+.camp-relic{cursor:pointer;font:900 21px ui-monospace,monospace}.camp-relic.found{border-color:#d9b76c;background:#403c45}.camp-relic:focus-visible{outline:3px solid #ffda81}.camp-relic-detail{min-height:57px;padding:10px;background:#1b2030;border:1px solid #656078;font-size:11px;line-height:1.55;color:#e7d5b4}.cell{position:relative}.relic-mark{position:absolute;right:0;top:0;font-size:13px;line-height:1;filter:drop-shadow(0 0 3px #e9d77c);pointer-events:none}.relic-pop{color:#b8efff;border-color:#7dbde5}.relic-found{font-size:12px;color:#d5efff;font-weight:900;padding:4px 0}
+/* v0.14 treasure chests */
+.chest-mark{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(15px,5vw,26px);pointer-events:none;filter:drop-shadow(0 1px 2px #16111b)}
+.chest-mark.wooden-chest{font-size:0;filter:none}.chest-mark.wooden-chest::before{content:'';display:block;width:62%;height:46%;background:linear-gradient(#95612e 0 27%,#e9bb59 27% 37%,#704321 37% 76%,#4e2d20 76%);border:2px solid #35231c;border-radius:5px 5px 2px 2px;box-shadow:inset 3px 0 #c28a40,inset -3px 0 #c28a40,0 3px #271a1c}.chest-mark.wooden-chest::after{content:'';position:absolute;top:43%;left:46%;width:10%;height:19%;background:#ffe29a;border:1px solid #543520;box-shadow:0 0 0 1px #a97b3d}
+.chest-mark.wooden-chest.claimed{opacity:.5}.chest-mark.wooden-chest.claimed::after{background:#7c6b4e}
+.chest-opening{position:absolute;inset:0;z-index:6;display:grid;place-items:center;pointer-events:none;animation:chest-flash .8s ease-out forwards}.chest-opening .chest-spark{font-size:22px;filter:drop-shadow(0 0 5px #ffdc78)}@keyframes chest-flash{0%{opacity:0;transform:translateY(7px) scale(.5)}25%{opacity:1;transform:translateY(-3px) scale(1.2)}70%{opacity:1}100%{opacity:0;transform:translateY(-22px) scale(.8)}}
+</style></head><body><main>
+<section id="homeScreen" class="screen active" aria-label="Startmenü"><div class="home-center"><div class="hero-emoji">⛏️</div><div class="hero-logo">DEEP DIG!</div><div class="screen-sub">TACTICAL DIGGER · v0.15 TEST 2 · DEV</div><p class="tiny">Grabe dich durch die Mine. Plane deine Energie. Sammle Schätze!</p><button class="menu-btn" id="homePlay">▶ SPIELEN</button><button class="menu-btn secondary" id="homeCamp">🏕️ BERGARBEITER-LAGER</button><button class="menu-btn secondary" id="devGold">🧪 +500 TESTGOLD</button><p class="dev-mode-note">🧪 ENTWICKLERMODUS · ALLE 25 LEVEL FREI · 500 GOLD BEIM ERSTEN START</p><button class="menu-btn secondary" id="homeSettings">♫ EINSTELLUNGEN</button><button class="menu-btn secondary" id="homeHelp">? ANLEITUNG</button></div><div class="tiny">Für Smartphones entwickelt · Fortschritt wird lokal gespeichert</div></section>
+<section id="campScreen" class="screen" aria-label="Bergarbeiter-Lager"><div class="screen-header"><button class="audio-toggle" id="campBack">← ZURÜCK</button><span class="screen-title">BERGARBEITER-LAGER</span></div><div class="camp-content"><div class="camp-banner"><div class="camp-art" aria-hidden="true">🌲 🏕️ ⛏️</div><h2>DEIN LAGER</h2><p class="camp-muted">Deine Beute. Deine Sammlung. Deine Werkstatt.</p></div><section class="camp-panel" aria-label="Goldkonto"><h3><span class="gold-coin" aria-hidden="true"></span> GOLDKASSE</h3><div class="camp-wallet" id="campGold" aria-live="polite">0 GOLD</div><p class="camp-muted">Gold wird nach erfolgreichen Minenausflügen sicher eingelagert. Kaufe dauerhafte Verbesserungen in der Werkstatt. Ihre Wirkung wird erst in Test 3 aktiviert.</p></section><section class="camp-panel" aria-label="Schatzkammer"><h3>💎 SCHATZKAMMER <span class="camp-pill" id="campRelicCount">0 / 10</span></h3><div class="camp-relics" id="campRelics" aria-label="Zehn Reliktplätze"></div><div id="campRelicDetail" class="camp-relic-detail" aria-live="polite">Tippe auf einen Reliktplatz, um mehr zu erfahren.</div><p class="camp-muted">Zehn geheimnisvolle Relikte warten darauf, entdeckt zu werden. Die Fundorte folgen im nächsten Testschritt.</p></section><section class="camp-panel" aria-label="Werkstatt"><div class="workshop-head"><h3>🔨 WERKSTATT</h3><span class="workshop-tag">TEST 2 · KAUFSYSTEM</span></div><p class="camp-muted">Rüste deinen Bergarbeiter dauerhaft auf. Moderate Verbesserungen – alle Level bleiben auch ohne Upgrades spielbar.</p><div class="workshop-items" id="workshopItems"></div><div class="workshop-message" id="workshopMessage" aria-live="polite"></div><p class="workshop-note">🛡️ Käufe sind dauerhaft. Die Verbesserungen wirken erst ab Test 3 im Spiel.</p></section></div></section>
+<section id="levelsScreen" class="screen" aria-label="Levelauswahl"><div class="screen-header"><button class="audio-toggle" id="levelsBack">← ZURÜCK</button><span class="screen-title">LEVELAUSWAHL</span></div><div class="screen-content"><p class="tiny">Wähle eine freigeschaltete Mine. Sterne zeigen deine Bestleistung.</p><div id="worldTabs" class="world-tabs" aria-label="Minenwelt auswählen"></div><p id="worldDescription" class="tiny"></p><div id="levels" class="levels"></div></div></section>
+<section id="gameScreen" class="screen game-screen" aria-label="Spiel"><div class="screen-header"><button class="audio-toggle" id="gameBack">← LEVEL</button><span class="screen-title" id="gameLevelTitle">MINE 01</span><button class="audio-toggle" id="gameSettings">♫</button></div><div class="goals" id="goals" aria-live="polite"></div><div class="hud"><span id="energy">⚡ 20/25</span><span id="score">★ 0</span><span id="best">🏆 0</span></div><div class="board-wrap"><div id="board" class="board" aria-label="Mine"></div><div id="goldPop" class="gold-pop" hidden aria-live="polite"></div><aside id="tutorialPanel" class="tutorial-panel" aria-label="Spielanleitung" hidden><div class="tutorial-title" id="tutorialTitle"></div><div class="tutorial-text" id="tutorialText"></div><div class="tutorial-legend" id="tutorialLegend" hidden></div><div class="tutorial-buttons"><button id="tutorialSkip" type="button">ÜBERSPRINGEN</button><button id="tutorialNext" class="primary" type="button">WEITER →</button></div></aside><section id="summary" class="summary" hidden role="dialog" aria-modal="true" aria-label="Levelergebnis" aria-live="polite"><h2 id="resultTitle"></h2><div class="resultline"><span>Punktestand</span><strong id="resultScore"></strong></div><div class="resultline"><span>Restenergie</span><strong id="resultEnergy"></strong></div><div class="resultline"><span>Züge</span><strong id="resultMoves"></strong></div><div class="resultline"><span>Sterne in dieser Runde</span><strong id="resultStars"></strong></div><div class="resultline"><span>Persönlicher Rekord</span><strong id="resultBest"></strong></div><div class="resultline"><span>Beste Sterne</span><strong id="resultBestStars"></strong></div><div class="resultline reward-line"><span>🪙 Neues Gold</span><strong id="resultGold">+0</strong></div><div class="resultline reward-line"><span>💎 Neues Relikt</span><strong id="resultRelic">–</strong></div><div class="resultline reward-line"><span>🪙 Goldkonto</span><strong id="resultWallet">0</strong></div><p class="notice" id="resultHint"></p><div class="overlay-actions"><button class="action" id="overlayRestart">↻ NEUER VERSUCH?</button><button class="action" id="overlayNext">NÄCHSTES LEVEL →</button><button class="action" id="overlayChoose">LEVELAUSWAHL</button></div></section></div><div class="status" id="status" aria-live="polite"></div><div class="game-actions"><button class="action" id="restart">↻ NEU STARTEN</button><button class="action" id="next">NÄCHSTES LEVEL →</button><button class="action" id="choose">LEVELAUSWAHL</button></div><div id="intro" hidden></div></section>
+<section id="settingsScreen" class="screen" aria-label="Einstellungen"><div class="screen-header"><button class="audio-toggle" id="settingsBack">← ZURÜCK</button><span class="screen-title">EINSTELLUNGEN</span></div><div class="settings-body"><section class="audio-panel" aria-label="Audioeinstellungen"><div class="audio-head"><strong>♫ MINEN-SOUND</strong><button type="button" id="audioToggle" class="audio-toggle" aria-pressed="false">♫ SOUND AN</button></div><label class="audio-row" for="musicVolume"><span>♪ Musik</span><input id="musicVolume" type="range" min="0" max="100" step="5" value="35"><output id="musicValue" for="musicVolume">35%</output></label><label class="audio-row" for="sfxVolume"><span>⚒ Effekte</span><input id="sfxVolume" type="range" min="0" max="100" step="5" value="65"><output id="sfxValue" for="sfxVolume">65%</output></label><div class="audio-diagnostics"><button type="button" class="audio-toggle" id="testAudio">▶ TESTTON ABSPIELEN</button><span id="audioStatus" role="status" aria-live="polite">Audio: noch nicht gestartet</span></div><div class="audio-tip" id="audioTip">Musik startet nach deiner ersten Eingabe. Die Lautstärken werden gespeichert.</div></section></div></section>
+<section id="helpScreen" class="screen" aria-label="Anleitung"><div class="screen-header"><button class="audio-toggle" id="helpBack">← ZURÜCK</button><span class="screen-title">ANLEITUNG</span></div><div class="screen-content help"><p>⛏️ <b>Ziel:</b> Erreiche die Leiter unten in der Mine.</p><p>👆 Tippe auf ein markiertes Nachbarfeld – links, rechts oder unten.</p><p>⚡ Erde kostet 1 Energie, Stein 3. Bereits gegrabene Tunnel sind kostenlos.</p><p>🪙 Gold bringt 10 Punkte, 💎 Edelsteine 30 Punkte und 🧪 Energietränke +3 Energie (maximal 25).</p><p>🌋 Lava und 👹 Goblins sind unpassierbar. Versteckte Schätze funkeln im Erdreich.</p><p>🧰 Schatztruhen kosten 3 Energie und bringen beim ersten erfolgreichen Bergen 20 Gold.</p><p>⭐ Sammle Punkte für bis zu drei Sterne. Ein Umweg lohnt sich nicht immer!</p><button type="button" class="menu-btn secondary" id="replayTutorial" style="width:100%;margin:10px 0">▶ TUTORIAL ERNEUT STARTEN</button></div></section>
+</main><script>
+'use strict';
+
+// Eigenständiger, lizenzfreier Chiptune direkt mit Web Audio erzeugt.
+// Kein Download, kein Tracking, keine externen Assets. Start erst nach Nutzerinteraktion.
+const AUDIO_KEY='deepdig_audio_v010';
+const audioSettings={music:35,sfx:65,muted:false};
+try{const saved=JSON.parse(localStorage.getItem(AUDIO_KEY)||'null');if(saved){for(const k of ['music','sfx'])if(Number.isFinite(saved[k]))audioSettings[k]=Math.max(0,Math.min(100,saved[k]));audioSettings.muted=!!saved.muted}}catch(e){}
+let audioCtx=null,musicBus=null,sfxBus=null,musicTimer=null,nextBeat=0,beatIndex=0;
+const AUDIO_TEMPO=0.225;
+// 32-step original cave motif in A minor, with rests and repeating 8-bit bass.
+const melody=[69,null,72,76,74,null,72,null,67,null,69,72,64,null,67,null,69,null,72,76,79,76,74,null,72,69,67,null,64,null,69,null];
+const bass=[45,45,48,48,43,43,40,40,45,45,48,48,43,43,40,40];
+function persistAudio(){try{localStorage.setItem(AUDIO_KEY,JSON.stringify(audioSettings))}catch(e){}}
+function refreshAudioUI(){
+  for(const [key,id] of [['music','musicVolume'],['sfx','sfxVolume']]){document.getElementById(id).value=audioSettings[key];document.getElementById(key+'Value').textContent=audioSettings[key]+'%'}
+  const toggle=document.getElementById('audioToggle');toggle.textContent=audioSettings.muted?'♪ SOUND AUS':'♫ SOUND AN';toggle.setAttribute('aria-pressed',String(!audioSettings.muted));
+  if(musicBus)musicBus.gain.setTargetAtTime(audioSettings.muted?0:audioSettings.music/100*0.27,audioCtx.currentTime,.025);
+  if(sfxBus)sfxBus.gain.setTargetAtTime(audioSettings.muted?0:audioSettings.sfx/100*0.30,audioCtx.currentTime,.025);
+}
+function initAudio(){
+  if(audioCtx)return audioCtx;
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC){document.getElementById('audioTip').textContent='Dieser Browser unterstützt leider keine Audioausgabe.';return null}
+  try{
+    audioCtx=new AC();musicBus=audioCtx.createGain();sfxBus=audioCtx.createGain();
+    musicBus.connect(audioCtx.destination);sfxBus.connect(audioCtx.destination);
+    refreshAudioUI();return audioCtx;
+  }catch(e){document.getElementById('audioTip').textContent='Audio konnte nicht gestartet werden.';return null}
+}
+function tone(freq,at,duration,type,volume,bus,slide=0){
+  if(!audioCtx||!bus||freq<=0)return;
+  const osc=audioCtx.createOscillator(),env=audioCtx.createGain();osc.type=type;
+  osc.frequency.setValueAtTime(freq,at);
+  if(slide)osc.frequency.exponentialRampToValueAtTime(Math.max(30,freq+slide),at+duration);
+  env.gain.setValueAtTime(.0001,at);
+  env.gain.linearRampToValueAtTime(volume,at+.009);
+  env.gain.setValueAtTime(volume*.70,at+Math.min(duration*.35,.07));
+  env.gain.exponentialRampToValueAtTime(.0001,at+duration);
+  osc.connect(env);env.connect(bus);osc.start(at);osc.stop(at+duration+.012);
+}
+function hz(midi){return 440*Math.pow(2,(midi-69)/12)}
+function scheduleMusic(){
+  if(!audioCtx||audioCtx.state!=='running'||document.hidden)return;
+  while(nextBeat<audioCtx.currentTime+.22){
+    const i=beatIndex%32,at=nextBeat;
+    if(melody[i]!==null)tone(hz(melody[i]),at,.155,'square',.115,musicBus);
+    if(i%2===0)tone(hz(bass[(i/2)%16]),at,.28,'triangle',.23,musicBus);
+    if(i%4===2)tone(hz(melody[(i+4)%32]||57)/2,at,.085,'square',.035,musicBus);
+    beatIndex++;nextBeat+=AUDIO_TEMPO;
+  }
+}
+let audioStarting=false;
+function showAudioStatus(message){document.getElementById('audioStatus').textContent=message}
+function unlockIOSAudio(ctx){
+  // Stiller Buffer direkt innerhalb der Nutzeraktion: unterstützt ältere iOS-Safari-Versionen.
+  try{const buffer=ctx.createBuffer(1,1,22050),source=ctx.createBufferSource();source.buffer=buffer;source.connect(ctx.destination);source.start(0)}catch(e){}
+}
+function startAudio(){
+  const ctx=initAudio();if(!ctx)return Promise.resolve(false);
+  unlockIOSAudio(ctx);
+  // resume() MUSS synchron innerhalb des Touch-/Click-Handlers aufgerufen werden.
+  let resumed;
+  try{resumed=ctx.state==='running'?Promise.resolve():ctx.resume()}catch(e){showAudioStatus('Audio: Start fehlgeschlagen');return Promise.resolve(false)}
+  showAudioStatus(ctx.state==='running'?'Audio: bereit':'Audio: wird freigeschaltet …');
+  return Promise.resolve(resumed).then(()=>{
+    if(ctx.state!=='running'){showAudioStatus('Audio: von Safari blockiert – erneut tippen');return false}
+    showAudioStatus('Audio: bereit ✓');
+    if(!musicTimer){nextBeat=ctx.currentTime+.06;musicTimer=setInterval(scheduleMusic,85)}
+    // Nach Pausen keine in der Vergangenheit liegenden Noten nachholen.
+    if(nextBeat<ctx.currentTime)nextBeat=ctx.currentTime+.06;
+    scheduleMusic();return true;
+  }).catch(()=>{showAudioStatus('Audio: blockiert – bitte erneut tippen');return false});
+}
+function sound(name){
+  if(!audioCtx||audioCtx.state!=='running'||audioSettings.muted||audioSettings.sfx===0)return;
+  const t=audioCtx.currentTime+.005;
+  if(name==='dirt'){tone(155,t,.065,'triangle',.22,sfxBus,-65);tone(90,t+.025,.07,'square',.045,sfxBus,-40)}
+  else if(name==='rock'){tone(225,t,.075,'square',.15,sfxBus,-110);tone(120,t+.04,.11,'triangle',.18,sfxBus,-55)}
+  else if(name==='gold'){tone(660,t,.075,'square',.13,sfxBus);tone(990,t+.075,.13,'square',.10,sfxBus)}
+  else if(name==='gem'||name==='hidden'){for(let i=0;i<3;i++)tone(hz([76,81,88][i]),t+i*.075,.14,'sine',.20,sfxBus)}
+  else if(name==='energy'){tone(330,t,.12,'triangle',.18,sfxBus,180);tone(660,t+.11,.13,'sine',.14,sfxBus)}
+  else if(name==='win'){[72,76,79,84].forEach((n,i)=>tone(hz(n),t+i*.13,.23,'square',.12,sfxBus))}
+  else if(name==='lose'){[57,53,50,45].forEach((n,i)=>tone(hz(n),t+i*.15,.20,'triangle',.20,sfxBus))}
+  else if(name==='lava'){tone(75,t,.15,'sine',.055,sfxBus,25)}
+}
+function lavaAmbience(){
+  if(!audioCtx||audioCtx.state!=='running'||audioSettings.muted||audioSettings.sfx===0||document.hidden||ended)return;
+  if(Math.random()<.28&&cells.some(t=>t==='lava'))sound('lava');
+}
+let lavaTimer=null;
+function activateAudio(){
+  if(audioSettings.muted)return;
+  startAudio();
+  if(!lavaTimer)lavaTimer=setInterval(lavaAmbience,2200);
+}
+const audioToggle=document.getElementById('audioToggle');
+audioToggle.addEventListener('click',()=>{audioSettings.muted=!audioSettings.muted;persistAudio();refreshAudioUI();if(!audioSettings.muted)activateAudio()});
+for(const [key,id] of [['music','musicVolume'],['sfx','sfxVolume']]){
+  document.getElementById(id).addEventListener('input',e=>{audioSettings[key]=Number(e.target.value);persistAudio();refreshAudioUI();activateAudio()});
+}
+function testBeep(){
+  // Eigener Testton, auch bei deaktivierter Musik. Zum Test werden SFX kurz hörbar geschaltet.
+  audioSettings.muted=false;
+  if(audioSettings.sfx===0)audioSettings.sfx=65;
+  persistAudio();refreshAudioUI();
+  const ctx=initAudio();if(!ctx)return;
+  unlockIOSAudio(ctx);
+  let pending;
+  try{pending=ctx.state==='running'?Promise.resolve():ctx.resume()}catch(e){showAudioStatus('Testton: Start fehlgeschlagen');return}
+  Promise.resolve(pending).then(()=>{
+    if(ctx.state!=='running'){showAudioStatus('Testton blockiert – nochmals tippen');return}
+    showAudioStatus('Testton ausgelöst ✓ – hörst du drei Töne?');
+    const t=ctx.currentTime+.04;
+    [523.25,659.25,783.99].forEach((f,i)=>tone(f,t+i*.19,.16,'sine',.42,sfxBus));
+    if(!musicTimer){nextBeat=ctx.currentTime+.75;musicTimer=setInterval(scheduleMusic,85)}
+  }).catch(()=>showAudioStatus('Testton blockiert – nochmals tippen'));
+}
+document.getElementById('testAudio').addEventListener('click',testBeep);
+// Safari/iOS: touchend + click als Fallback, keine Abhängigkeit von pointerdown allein.
+// Die Handler rufen resume() ohne await direkt aus einer Nutzeraktion auf.
+document.addEventListener('touchend',e=>{if(e.target.closest('button,.cell'))activateAudio()},{passive:true});
+document.addEventListener('pointerdown',e=>{if(e.target.closest('button,.cell'))activateAudio()},{passive:true});
+document.addEventListener('click',e=>{if(e.target.closest('button,.cell'))activateAudio()});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '||e.key.startsWith('Arrow'))activateAudio()});
+document.addEventListener('visibilitychange',()=>{
+  if(!audioCtx)return;
+  if(document.hidden){audioCtx.suspend().catch(()=>{});showAudioStatus('Audio: pausiert')}
+  else{showAudioStatus('Audio: zum Fortsetzen tippen');nextBeat=audioCtx.currentTime+.06}
+});
+
+refreshAudioUI();
+
+const W=8,H=12,MAX=25,START=20,TOTAL_LEVELS=25,MAPS={"1":["........","g#...#..","...g..d#","...g....","g...#...","...d.#..","..#.g.#g","......dd","#..+.#.g","##...#..","#d.d....","...E...."],"2":["........","....d..#","..g....#","......g.",".d.d..g.",".......#","g#.+....","...g..g.","...d....","...g..d.","..d..#..","...E...."],"3":["........",".g.g.d..","gg..d...","....g...","?#...#..",".d.#+..g","g##.d#..",".....#..","#.d#.##.",".d......","........","...E...."],"4":["........","........","....d..#","g...g.?#","..##+...",".......d",".g...d..","g.......","gg...#..",".....#..",".#dg#..d","...E...."],"5":["........",".....Lg.","L.d....L","..L.+...","L.g.ddL.","gd.L.L..",".g.#gL..","..?g...L","...d..L.",".gL.....","......Ld","...E...."],"6":["........",".....LLL","?.L.dd..","d...dLL.","L..d#L.g",".L.g....",".g..gg..","..LLg...","....+...","...L...d","L.g...L.","...E...."],"7":["........","..Mg....",".M#d.#LL","...LL...","..gg.Lg.","#..M..?g",".dLM...d",".L+.....","..d....g","...Ld..L",".d..Mg..","...E...."],"8":["........","M.LLL..M","d##..M.L","..#..#..","LL....#.","MMg..g..","Lddg....","gg#+...g","MM.d...L","ML?.d.MM",".L....gL","...E...."],"9":["........","........","##ddL..g","..#gL.MM",".?+....d","gLg...L.",".d#.....","...LL#..","#LL.dLML","gL....M.",".d.gL...","...E...."],"10":["........","g..L...L","..M.....",".LL.gM..","L..+dg.?","..M..#..","gLLd##dL","...L#.L.","LL..##..","......dd","..M#..M.","...E...."],"11":["........","d.....g+","..###.g#","?#gg+?.?","#?dg.?d?","..d...+#",".dg?+g.g","?g.#.#.+",".g.#.d.g","#.g#.g+#","?.#g....","...E...."],"12":["........","..##..#.",".#..g.d+","..#g.d?.","gg.+d+dg","#.?#..g#","dgg.g.#d","#.#d##..","+?.dg+..","+d.+.gdd",".?...+g.","...E...."],"13":["........","#...g.?.","..g...#.","?d..#g#.","#+.?dd..",".#g..+.d","+##..##g",".?#..g++","..gd.+.#","d#+.d.?.","+.?.g#.g","...E...."],"14":["........","d?...+#.","?#g..d..","#d.+gg..","d+..#?#.","##g#####","...#.?g.",".#dgg..g",".d.+#?.#","#..g.g?.","dgd###..","...E...."],"15":["........","##...#.+","#.g..?d.",".#.+.+.?","..d++dg.","d.g.g#dd","++..#?#.","++?...d#","..#dg#d.","+d+g+...","...g....","...E...."],"16":["........","?#..?#dd","....g?g#","#.gg.dd.","?L??.+.+","..#.gd..",".dd.#.g.","d.g.+..d","gd?g+dgd","g+.d?.+.",".ddg..d#","...E...."],"17":["........","#.#d....","#d+d..L#","L?d#.d?.","+g+ggddd","#gg..dg.","??d?g+dL","L?.d....","+g+g?g..","?#+#.#.#","dd.d..dL","...E...."],"18":["........","L+.?#gd.","?.......",".d.g??d.","#d..dd#d","+?+L+.Ld","?.Lg.g..","g+#..#..","g+Ld.L.+","+L+g+.d#",".g..L.?.","...E...."],"19":["........",".gg..LL.",".....gdd","?d.gd..d","#+d.dg.d","?.d#+.+.","L+g.+gd.","ddg#L##+",".##gL...",".dg.Lgdd","Ld+..+..","...E...."],"20":["........","#.g.dddg",".....++.","?L.g.+#.","+L+.d.L#","g.d.+..+",".L#gdd#L","dL..?d#L","dgLdgd?g","...d+.?+","d.#g..?d","...E...."],"21":["........",".....MM.","M...g.g#","+LgM.L#+",".M.+d.L.",".dL..+L+","+#Lg#MLg","L.L..d.L","dgLdgLL#","#d..+gLg","#.d.gLL+","...E...."],"22":["........","dg..MMML","d....gLM","dL.g.#L.",".L+Md+ML",".+gLL.g.","#LL.L.#L","g.LM..d#","d.L.++g#","d+L.+..M",".d+#dg.+","...E...."],"23":["........","LM..d##.",".L....dL","g+.gd.+g","..d.Lgg#","dM+.LgML",".#Lg#gLL","ddM..#.L","++gdg#.d","gg+...M#","+g+.#+g+","...E...."],"24":["........","#..d#Mg.","..g.d.+#","ML.L.d.d","LLd.g#gd","L#+.gMg.","M+Lg#dMd","gLg#..ML","+g..Ldd.","ggL.+g+.","g##g...L","...E...."],"25":["........","dd.#..#.",".#.#....","gg#.Lg.#","#L.L++dd","dL...L+.","+dL..g.L","M.dgd#.d","++.L++..","L.+MMLd.",".d...+g.","...E...."]};
+const TYPES={'.':'dirt','#':'rock','g':'gold','d':'gem','+':'energy','L':'lava','M':'monster','E':'exit','?':'hidden'};
+const LABELS=['','Erste Schritte: Finde den Ausgang.','Wähle: kurzer Weg oder mehr Schätze?','Ein ungewöhnliches Erdfeld kann etwas verbergen.','Entscheide, welche Umwege sich lohnen.','Neu: Lava blockiert den Weg.','Finde eine Route zwischen Lavafeldern.','Neu: Goblins sind feste Hindernisse.','Lava und Monster: Nicht jeder Umweg ist bezahlbar.','Achte auf teure Steine und Sackgassen.','Finale: Prüfe deine Route, bevor du gräbst.'];
+// Release candidate: normal progression, 25 levels.
+const WORLDS=[{name:'DIE ERSTEN MINEN',from:1,to:10,theme:'classic'},{name:'DIE KUPFERMINE',from:11,to:15,theme:'copper'},{name:'DIE KRISTALLHÖHLEN',from:16,to:20,theme:'crystal'},{name:'DER LAVAKERN',from:21,to:25,theme:'volcano'}];
+let selectedWorld=0;
+LABELS.push(...["Kupfermine: Die erste tiefere Schicht.","Rostrote Tunnel und kostbare Funde.","Finde den Weg durch Felsadern.","Ein guter Umweg spart Energie.","Kupfermine: Die letzte Prüfung.","Kristallhöhle: Glitzernde Versuchung.","Nicht jeder Kristall lohnt den Umweg.","Tief in den blauen Gängen.","Kostbare Schätze, knappe Energie.","Kristallhöhle: Das große Finale.","Lavakern: Meide die heißen Felder.","Wähle deinen Weg zwischen Lava und Stein.","Die Goblins bewachen den Abstieg.","Ein letzter Weg durch die Glut.","Finale: Erreiche den tiefsten Ausgang!"]);
+const STORE='deepdig_v07_progress', OLD_STORE='deepdig_v06_progress',TREASURE_STORE='deepdig_v014_treasure';
+const TARGETS={"1":[190,250],"2":[190,260],"3":[190,240],"4":[190,230],"5":[190,260],"6":[200,260],"7":[170,220],"8":[190,250],"9":[170,230],"10":[120,160]};
+Object.assign(TARGETS,{"11":[90,150],"12":[90,150],"13":[90,150],"14":[90,150],"15":[90,150],"16":[90,150],"17":[90,150],"18":[90,150],"19":[90,150],"20":[90,150],"21":[90,150],"22":[90,150],"23":[90,150],"24":[90,150],"25":[90,150]});
+let progress={unlocked:1,best:{},stars:{}};
+let treasure={gold:0,claimed:{},starClaims:{},relics:{},chests:{}};
+try{const saved=JSON.parse(localStorage.getItem(TREASURE_STORE)||'null');if(saved&&typeof saved==='object'){treasure.gold=Math.max(0,Number(saved.gold)||0);treasure.claimed=saved.claimed&&typeof saved.claimed==='object'?saved.claimed:{};treasure.starClaims=saved.starClaims&&typeof saved.starClaims==='object'?saved.starClaims:{};treasure.relics=saved.relics&&typeof saved.relics==='object'?saved.relics:{};treasure.chests=saved.chests&&typeof saved.chests==='object'?saved.chests:{}}}catch(e){}
+const RELICS=[
+{id:1,level:2,name:'Münze des ersten Königs',icon:'🪙',description:'Eine uralte Münze aus den ersten Minenschächten.'},
+{id:2,level:5,name:'Moosamulett',icon:'🍀',description:'Ein grünes Amulett, das im Fels überdauert hat.'},
+{id:3,level:9,name:'Vergessener Kompass',icon:'🧭',description:'Seine Nadel zeigt tiefer in den Berg.'},
+{id:4,level:12,name:'Kupferkrone',icon:'👑',description:'Eine Krone aus gehämmertem Kupfer.'},
+{id:5,level:15,name:'Bergmannsiegel',icon:'🔱',description:'Das Zeichen einer verschwundenen Bergarbeitergilde.'},
+{id:6,level:17,name:'Kristallherz',icon:'💠',description:'Ein Kristall mit geheimnisvollem Licht.'},
+{id:7,level:20,name:'Mondsplitter',icon:'🌙',description:'Ein Splitter, der selbst im Dunkeln schimmert.'},
+{id:8,level:22,name:'Glutperle',icon:'🔴',description:'Eine Perle, die nie vollständig erkaltet.'},
+{id:9,level:24,name:'Phönixfeder',icon:'🪶',description:'Eine seltene Feder aus der Tiefe des Lavakerns.'},
+{id:10,level:25,name:'Herz der Mine',icon:'💎',description:'Der legendäre Schatz am tiefsten Punkt.'}
+];
+function relicForLevel(n){return RELICS.find(r=>r.level===n)||null}
+const WORKSHOP_PREVIEW=[
+ {icon:'⛏️',name:'SPITZHACKE',desc:'Spart beim Felsabbau gelegentlich Energie. Fels kostet weiterhin mindestens 2 Energie.',prices:[60,140,260],effects:['Jeder 3. Fels: −1 ⚡','Jeder 2. Fels: −1 ⚡','Jeder Fels: −1 ⚡']},
+ {icon:'🎒',name:'ENERGIERUCKSACK',desc:'Beginne eine Mine mit etwas mehr Energie.',prices:[50,120,220],effects:['21 Startenergie','22 Startenergie','23 Startenergie']},
+ {icon:'🏮',name:'GOLDLATERNE',desc:'Mehr Gold aus neuen Goldfeldern. Bereits gesammeltes Gold bleibt unverändert.',prices:[80,170,300],effects:['6 Gold / Feld','7 Gold / Feld','8 Gold / Feld']}
+];
+const WORKSHOP_STORE='deepdig_v015_workshop_test';
+const WORKSHOP_IDS=['pickaxe','backpack','lantern'];
+let workshopLevels={pickaxe:0,backpack:0,lantern:0};
+try{const stored=JSON.parse(localStorage.getItem(WORKSHOP_STORE)||'null');if(stored&&typeof stored==='object')for(const id of WORKSHOP_IDS){const n=Number(stored[id]);if(Number.isInteger(n)&&n>=0&&n<=3)workshopLevels[id]=n}}catch(e){}
+function purchaseWorkshop(id){
+ const idx=WORKSHOP_IDS.indexOf(id);if(idx<0)return;
+ const level=workshopLevels[id],item=WORKSHOP_PREVIEW[idx];if(level>=3)return;
+ const price=item.prices[level];if(treasure.gold<price)return;
+ if(!confirm(item.name+' auf Stufe '+(level+1)+' verbessern?\\nKosten: '+price+' Gold\\nVerbleibend: '+(treasure.gold-price)+' Gold'))return;
+ const previousGold=treasure.gold;treasure.gold-=price;workshopLevels[id]=level+1;
+ try{localStorage.setItem(WORKSHOP_STORE,JSON.stringify(workshopLevels));localStorage.setItem(TREASURE_STORE,JSON.stringify(treasure))}
+ catch(e){treasure.gold=previousGold;workshopLevels[id]=level;try{localStorage.setItem(WORKSHOP_STORE,JSON.stringify(workshopLevels));localStorage.setItem(TREASURE_STORE,JSON.stringify(treasure))}catch(_){}$('workshopMessage').textContent='⚠️ Speichern fehlgeschlagen. Kauf nicht übernommen.';updateCamp();return}
+ updateCamp();$('workshopMessage').textContent='✅ '+item.name+' auf Stufe '+(level+1)+' verbessert! Die Wirkung folgt in Test 3.';
+}
+function renderWorkshopPreview(){
+ const root=$('workshopItems');if(!root)return;root.replaceChildren();
+ for(const [idx,item] of WORKSHOP_PREVIEW.entries()){
+  const id=WORKSHOP_IDS[idx],level=workshopLevels[id];
+  const card=document.createElement('div');card.className='workshop-item';
+  const art=document.createElement('div');art.className='workshop-icon';art.textContent=item.icon;art.setAttribute('aria-hidden','true');
+  const info=document.createElement('div'),title=document.createElement('div');title.className='workshop-name';title.textContent=item.name+' · STUFE '+level+' / 3';
+  const desc=document.createElement('p');desc.className='workshop-description';desc.textContent=item.desc;
+  const levels=document.createElement('div');levels.className='workshop-levels';
+  item.prices.forEach((price,i)=>{const tier=document.createElement('span');tier.className='workshop-level'+(i<level?' owned':'');tier.title=item.effects[i];tier.textContent='S'+(i+1)+' · '+(i<level?'✓':price+' Gold');levels.append(tier)});
+  const effect=document.createElement('div');effect.className='workshop-price';effect.textContent=level?'Aktiv ab Test 3: '+item.effects[level-1]:'Stufe 1: '+item.effects[0];
+  const buy=document.createElement('button');buy.type='button';buy.className='workshop-buy';buy.disabled=level>=3||treasure.gold<item.prices[level];buy.textContent=level>=3?'✓ MAXIMALE STUFE':treasure.gold<item.prices[level]?'🔒 '+item.prices[level]+' GOLD BENÖTIGT':'KAUFEN · '+item.prices[level]+' GOLD';buy.addEventListener('click',()=>purchaseWorkshop(id));
+  info.append(title,desc,levels,effect,buy);card.append(art,info);root.append(card);
+ }
+}
+function updateCamp(){renderWorkshopPreview();
+const wallet=$('campGold');if(!wallet)return;wallet.textContent=treasure.gold+' GOLD';
+const found=RELICS.filter(r=>treasure.relics[r.id]).length;$('campRelicCount').textContent=found+' / 10';
+const grid=$('campRelics');grid.replaceChildren();
+for(const relic of RELICS){const owned=!!treasure.relics[relic.id],tile=document.createElement('button');tile.type='button';tile.className='camp-relic'+(owned?' found':'');tile.textContent=owned?relic.icon:'?';tile.setAttribute('aria-label',owned?relic.name:'Unbekanntes Relikt '+relic.id);tile.addEventListener('click',()=>{$('campRelicDetail').textContent=owned?relic.icon+' '+relic.name+' – '+relic.description:'🔒 Noch nicht entdeckt · Suche in '+WORLDS.find(w=>relic.level>=w.from&&relic.level<=w.to).name+'.'});grid.append(tile)}
+}
+function relicPathPosition(n){
+const rows=MAPS[n],start=3,target=(H-1)*W+3,dist=Array(W*H).fill(Infinity),prev=Array(W*H).fill(-1),used=new Set();dist[start]=0;
+for(let k=0;k<W*H;k++){let v=-1;for(let i=0;i<W*H;i++)if(!used.has(i)&&(v<0||dist[i]<dist[v]))v=i;if(v<0||!Number.isFinite(dist[v]))break;used.add(v);if(v===target)break;const xx=v%W,yy=Math.floor(v/W);for(const [a,b] of [[xx-1,yy],[xx+1,yy],[xx,yy+1]]){if(a<0||a>=W||b>=H)continue;const j=b*W+a,t=TYPES[rows[b][a]];if(blocked(t))continue;const nd=dist[v]+cost(t);if(nd<dist[j]){dist[j]=nd;prev[j]=v}}}
+if(!Number.isFinite(dist[target])||dist[target]>START)return -1;
+const path=[];let at=target;while(at!==start&&at>=0){path.push(at);at=prev[at]}path.reverse();
+return path[Math.max(0,Math.min(path.length-2,Math.floor(path.length*.58)))];
+}
+let relicPosition=-1,pendingRelic=null,newRelic=null,chestPosition=-1,pendingChest=false,chestFlashUntil=0;
+
+// A route may move down or in one horizontal direction per row.
+// This ensures every potion is counted at most once.
+function safeChestRoute(n,chest){
+ const rows=MAPS[n],goal=(H-1)*W+3,queue=[[3,START,0,0]],seen=new Set(['3|'+START+'|0|0']);
+ for(let head=0;head<queue.length;head++){
+  const [pos,power,found,dir]=queue[head];
+  if(pos===goal&&found)return true;
+  const xx=pos%W,yy=Math.floor(pos/W);
+  for(const [nx,ny,nd] of [[xx-1,yy,-1],[xx+1,yy,1],[xx,yy+1,0]]){
+   if(nx<0||nx>=W||ny>=H||(nd&&dir&&nd!==dir))continue;
+   const next=ny*W+nx,t=TYPES[rows[ny][nx]];
+   if(blocked(t))continue;
+   const spend=cost(t)+(next===chest?2:0);
+   if(power<spend)continue;
+   const nextPower=Math.min(MAX,power-spend+(t==='energy'?3:0));
+   const nextFound=found||next===chest?1:0;
+   const nextDir=nd===0?0:nd;
+   const key=next+'|'+nextPower+'|'+nextFound+'|'+nextDir;
+   if(!seen.has(key)){seen.add(key);queue.push([next,nextPower,nextFound,nextDir])}
+  }
+ }
+ return false;
+}
+function chestForLevel(n){
+ const rows=MAPS[n],excluded=relicPathPosition(n),candidates=[];
+ for(let yy=1;yy<H-1;yy++)for(let xx=0;xx<W;xx++){
+  const i=yy*W+xx;
+  if(rows[yy][xx]==='g'&&i!==excluded&&Math.abs(xx-3)>=2&&safeChestRoute(n,i))candidates.push(i);
+ }
+ return candidates.length?candidates[Math.floor(n*3%candidates.length)]:-1;
+}
+function saveTreasure(){try{localStorage.setItem(TREASURE_STORE,JSON.stringify(treasure))}catch(e){status.textContent+=' (Goldspeicherung nicht möglich.)'}}
+let pendingGold=new Set(),newGold=0,goldPopTimer=null;
+function popGold(amount){const el=$('goldPop');el.textContent='🪙 +'+amount+' GOLD';el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';if(goldPopTimer)clearTimeout(goldPopTimer);goldPopTimer=setTimeout(()=>{el.hidden=true;goldPopTimer=null},1200)}
+function bankTreasure(stars){const key=String(level),previous=Array.isArray(treasure.claimed[key])?treasure.claimed[key]:[];const seen=new Set(previous);let earned=0;for(const i of pendingGold){if(!seen.has(i)){seen.add(i);earned+=5}}treasure.claimed[key]=[...seen];const oldStars=Math.max(0,Math.min(3,Number(treasure.starClaims[key])||0));const newStars=Math.max(oldStars,stars);earned+=Math.max(0,newStars-oldStars)*10;treasure.starClaims[key]=newStars;if(pendingChest&&chestPosition>=0&&!treasure.chests[key]){treasure.chests[key]=true;earned+=20}treasure.gold+=earned;newGold=earned;if(pendingRelic&&!treasure.relics[pendingRelic.id]){treasure.relics[pendingRelic.id]=true;newRelic=pendingRelic}saveTreasure()}
+
+try{
+  const current=JSON.parse(localStorage.getItem(STORE)||'null');
+  const legacy=JSON.parse(localStorage.getItem(OLD_STORE)||localStorage.getItem('deepdig_v04_progress')||'null');
+  if(current&&typeof current==='object'){
+    progress={unlocked:Math.max(1,Math.min(TOTAL_LEVELS,Number(current.unlocked)||1)),best:current.best||{},stars:current.stars||{}};
+  }else if(legacy&&typeof legacy==='object'){
+    // Keep completed levels and historical best scores, but recalculate stars under the new thresholds.
+    const best=legacy.best||{};
+    const stars={};
+    for(let n=1;n<=10;n++){
+      const score=Number(best[n])||0;
+      if(score>=50)stars[n]=starsFor(n,score);
+    }
+    progress={unlocked:Math.max(1,Math.min(TOTAL_LEVELS,Number(legacy.unlocked)||1)),best,stars};
+    localStorage.setItem(STORE,JSON.stringify(progress));
+  }
+}catch(e){}
+// Only in the separate deep-dig-test repository; never copy to production.
+const DEV_INIT_KEY='deepdig_dev_initialized_v1';
+progress.unlocked=TOTAL_LEVELS;
+try{if(localStorage.getItem(DEV_INIT_KEY)!=='yes'){
+ treasure.gold+=500;
+ localStorage.setItem(TREASURE_STORE,JSON.stringify(treasure));
+ localStorage.setItem(DEV_INIT_KEY,'yes');
+}}catch(e){}
+function starsFor(n,points){const [two,three]=TARGETS[n];return 1+Number(points>=two)+Number(points>=three)}
+let level=1,cells=[],visited=new Set(),x=3,y=0,energy=START,score=0,ended=false,won=false,moves=0,gameOverReason="",swingUntil=0,hitAt=-1,swingDirection=1,swingStart=0,swingTimer=null;
+const $=id=>document.getElementById(id),board=$('board'),status=$('status');
+
+const TUTORIAL_KEY='deepdig_tutorial_v012';
+let tutorialDone=false,tutorialStep='';
+try{tutorialDone=localStorage.getItem(TUTORIAL_KEY)==='done'}catch(e){}
+const TUTORIAL={
+welcome:['WILLKOMMEN IN DER MINE!','Du bist der Bergarbeiter mit dem gelben Helm. Dein Ziel ist die Leiter ganz unten. Wir zeigen dir zuerst, wie du dich bewegst.'],
+move:['JETZT BIST DU DRAN!','Tippe auf eines der leuchtenden Felder direkt neben dir. Du kannst nach links, rechts oder unten graben.'],
+energy:['⚡ DEINE ENERGIE','Oben siehst du deinen Energievorrat. Erde und Schätze kosten 1 Energie, harte Felsen kosten 3. Bereits gegrabene Wege sind kostenlos.'],
+symbols:['WAS BEDEUTEN DIE SYMBOLE?','Das sind die Dinge, die du in der Mine finden kannst:'],
+goal:['🎯 DEIN ZIEL','Grabe dich bis zur Leiter unten durch! Gold bringt 10 Punkte, Edelsteine 30. Mehr Punkte bedeuten mehr Sterne. Viel Spaß!'],
+lava:['🌋 NEU: LAVA','Lava kannst du nicht betreten. Suche einen sicheren Weg außen herum.'],
+monster:['👹 NEU: GOBLINS','Goblins blockieren ihre Felder. Du kannst nicht durch sie hindurchgraben.']};
+function setTutorial(step){
+tutorialStep=step;
+const panel=$('tutorialPanel'),title=$('tutorialTitle'),body=$('tutorialText'),legend=$('tutorialLegend');
+if(!step){panel.hidden=true;board.classList.remove('tutorial-move');$('energy').classList.remove('tutorial-highlight');return}
+const [head,msg]=TUTORIAL[step];title.textContent=head;body.textContent=msg;panel.hidden=false;
+board.classList.toggle('tutorial-move',step==='move');$('energy').classList.toggle('tutorial-highlight',step==='energy');
+legend.hidden=step!=='symbols';legend.replaceChildren();
+if(step==='symbols')for(const item of ['🟫 Erde: −1 ⚡','🪨 Fels: −3 ⚡','🪙 Gold: +10 ★','💎 Juwel: +30 ★','🧪 Trank: +3 ⚡','✨ Funkeln: Schatz','🪜 Leiter: Ausgang']){const span=document.createElement('span');span.textContent=item;legend.append(span)}
+$('tutorialNext').hidden=step==='move';
+$('tutorialSkip').textContent=step==='move'?'HINWEISE BEENDEN':'ÜBERSPRINGEN';
+$('tutorialNext').textContent=['goal','lava','monster'].includes(step)?'VERSTANDEN ✓':'WEITER →';
+}
+function finishTutorial(){tutorialDone=true;try{localStorage.setItem(TUTORIAL_KEY,'done')}catch(e){}setTutorial('')}
+function nextTutorial(){
+if(tutorialStep==='welcome')setTutorial('move');
+else if(tutorialStep==='energy')setTutorial('symbols');
+else if(tutorialStep==='symbols')setTutorial('goal');
+else if(tutorialStep==='goal')finishTutorial();
+else if(tutorialStep==='lava'||tutorialStep==='monster')setTutorial('');
+}
+$('tutorialNext').addEventListener('click',nextTutorial);
+$('tutorialSkip').addEventListener('click',()=>{if(tutorialStep==='lava'||tutorialStep==='monster')setTutorial('');else finishTutorial()});
+$('replayTutorial').addEventListener('click',()=>{tutorialDone=false;try{localStorage.removeItem(TUTORIAL_KEY)}catch(e){}level=1;newGame();showScreen('gameScreen')});
+function tutorialHazardSeen(kind){
+try{const k='deepdig_seen_'+kind+'_v012';if(localStorage.getItem(k)==='yes')return true;localStorage.setItem(k,'yes')}catch(e){}return false
+}
+
+function save(){try{localStorage.setItem(STORE,JSON.stringify(progress))}catch(e){status.textContent+=' (Speichern im Browser nicht möglich.)'}}
+function idx(a,b){return b*W+a}function cost(t){return t==='rock'?3:1}function blocked(t){return t==='lava'||t==='monster'}
+function neighbors(){return [[x-1,y],[x+1,y],[x,y+1]].filter(([a,b])=>a>=0&&a<W&&b<H)}
+function accessible(a,b){const i=idx(a,b);return !ended&&neighbors().some(([u,v])=>u===a&&v===b)&&!blocked(cells[i])&&(visited.has(i)||energy>=cost(cells[i])+(i===chestPosition?2:0))}
+function drawLevels(){
+ const root=$('levels'),tabs=$('worldTabs');root.replaceChildren();tabs.replaceChildren();
+ WORLDS.forEach((world,i)=>{const b=document.createElement('button');b.type='button';b.className='world-tab'+(selectedWorld===i?' selected':'');b.textContent=world.name;b.setAttribute('aria-pressed',String(selectedWorld===i));b.addEventListener('click',()=>{selectedWorld=i;drawLevels()});tabs.append(b)});
+ const world=WORLDS[selectedWorld];root.dataset.theme=world.theme;
+ for(let n=world.from;n<=world.to;n++){let b=document.createElement('button');b.type='button';b.disabled=n>progress.unlocked;b.classList.toggle('active',n===level);b.textContent=String(n).padStart(2,'0')+(n>progress.unlocked?' 🔒':'');let small=document.createElement('small');small.textContent=n<=progress.unlocked?'★'.repeat(progress.stars[n]||0)+'☆'.repeat(3-(progress.stars[n]||0)):'GESPERRT';b.append(small);b.addEventListener('click',()=>{level=n;newGame();showScreen('gameScreen')});root.append(b)}
+ $('worldDescription').textContent=world.name+' · LEVEL '+world.from+'–'+world.to;
+}
+function newGame(){setTutorial('');const rows=MAPS[level];if(!rows||rows.length!==H||rows.some(r=>r.length!==W))throw Error('Ungültige Karte');cells=rows.join('').split('').map(c=>TYPES[c]);x=3;y=0;energy=START;score=0;moves=0;won=false;ended=false;gameOverReason="";swingUntil=0;hitAt=-1;if(swingTimer)clearTimeout(swingTimer);swingTimer=null;visited=new Set([idx(x,y)]);pendingGold=new Set();newGold=0;pendingRelic=null;newRelic=null;relicPosition=relicForLevel(level)?relicPathPosition(level):-1;chestPosition=chestForLevel(level);pendingChest=false;chestFlashUntil=0;$('goldPop').hidden=true;cells[idx(x,y)]='empty';$('intro').textContent='LEVEL '+level+' / '+TOTAL_LEVELS+' · '+LABELS[level];$('gameLevelTitle').textContent='MINE '+String(level).padStart(2,'0');$('goals').textContent='⭐ Ziel · ⭐⭐ '+TARGETS[level][0]+' P. · ⭐⭐⭐ '+TARGETS[level][1]+' P.';status.textContent='Erreiche die Leiter unten. Schätze sind freiwillig!';selectedWorld=WORLDS.findIndex(w=>level>=w.from&&level<=w.to);drawLevels();render();document.body.dataset.mineTheme=level>=21?'volcano':level>=16?'crystal':level>=11?'copper':'classic';
+if(level===1&&!tutorialDone)setTutorial('welcome');
+if(level===5&&!tutorialHazardSeen('lava'))setTutorial('lava');
+if(level===7&&!tutorialHazardSeen('monster'))setTutorial('monster');
+}
+function move(a,b){if(!accessible(a,b))return;if(tutorialStep&&tutorialStep!=='move')return;const firstTutorialMove=tutorialStep==='move';const i=idx(a,b),tile=cells[i],old=visited.has(i);const digging=!old&&tile!=='exit';swingStart=performance.now();swingUntil=digging?swingStart+340:0;swingDirection=b>y?0:(a<x?-1:1);hitAt=digging?i:-1;if(!old){energy-=cost(tile)+(i===chestPosition?2:0);if(i===chestPosition){pendingChest=true;chestFlashUntil=performance.now()+850;if(!treasure.chests[String(level)])popGold(20)}if(tile==='gold'){score+=10;if(i!==chestPosition){const claimed=treasure.claimed[String(level)]||[];if(!claimed.includes(i)){pendingGold.add(i);popGold(5)}}}if(tile==='gem'||tile==='hidden')score+=30;if(tile==='energy')energy=Math.min(MAX,energy+3);if(tile==='exit')score+=50;visited.add(i);if(i===relicPosition&&!treasure.relics[relicForLevel(level).id]){pendingRelic=relicForLevel(level);const pop=$('goldPop');pop.textContent='💎 RELIKT ENTDECKT!';pop.hidden=false;if(goldPopTimer)clearTimeout(goldPopTimer);goldPopTimer=setTimeout(()=>{pop.hidden=true},1200)}}x=a;y=b;moves++;if(!old&&tile!=='exit')sound(tile);if(tile==='exit'){sound('win');ended=true;won=true;const stars=starsFor(level,score);bankTreasure(stars);progress.stars[level]=Math.max(progress.stars[level]||0,stars);progress.best[level]=Math.max(progress.best[level]||0,score);progress.unlocked=Math.max(progress.unlocked,Math.min(TOTAL_LEVELS,level+1));save();drawLevels();status.textContent='🏁 Level geschafft! '+ '⭐'.repeat(stars)+' · Nächstes Level freigeschaltet.'}else if(!hasUsefulMove()){sound('lose');ended=true;gameOverReason=energy===0?'ENERGIE AUFGEBRAUCHT':'KEIN WEG MEHR';status.textContent='⚡ '+(energy===0?'Keine Energie mehr.':'Keine bezahlbare Grabmöglichkeit mehr.')+' Neuer Versuch?'}else{status.textContent=old?'Bekannter Tunnel – kostenlos.':tile==='rock'?'🪨 Stein: −3 Energie.':tile==='gem'||tile==='hidden'?'💎 Edelstein: +30 Punkte.':i===chestPosition?'🪙 Schatztruhe geöffnet: −3 Energie.':tile==='gold'?'🪙 Gold: +10 Punkte.':tile==='energy'?'🧪 Energietrank: +3 Energie.':'Weiter graben!'}render();if(firstTutorialMove&&!ended)setTutorial('energy');else if(firstTutorialMove&&ended)finishTutorial();if(digging){const animate=()=>{if(performance.now()<Math.max(swingUntil,chestFlashUntil)){render();swingTimer=setTimeout(animate,55)}else{render();swingTimer=null}};swingTimer=setTimeout(animate,55)}}
+// Reachable free tunnels are explored before declaring game over; walking back and forth is free.
+function hasUsefulMove(){
+ const queue=[[x,y]],seen=new Set([idx(x,y)]);
+ for(let k=0;k<queue.length;k++){
+  const [a,b]=queue[k];
+  for(const [u,v] of [[a-1,b],[a+1,b],[a,b+1]]){
+   if(u<0||u>=W||v>=H)continue;
+   const j=idx(u,v),t=cells[j];if(blocked(t))continue;
+   if(visited.has(j)){if(!seen.has(j)){seen.add(j);queue.push([u,v])}}
+   else if(energy>=cost(t))return true;
+  }
+ }
+ return false;
+}
+// Pixelgrafik: ausschließlich lokale Canvas-Zeichenbefehle, keine externen Assets.
+const PALETTE={dirt:'#78503a',rock:'#50586b',gold:'#7c4e2e',gem:'#6b4635',energy:'#69533b',hidden:'#78503a',lava:'#ac3e24',monster:'#50334c',exit:'#473a59',empty:'#202637',player:'#202637'};
+function paintSprite(type,isPlayer,seen,frame=0,attack=false,direction=1){
+ const canvas=document.createElement('canvas');canvas.width=32;canvas.height=32;
+ const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;
+ const px=(x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(x,y,w,h)};
+ const hash=(n)=>((n*1103515245+12345)>>>0)%100;
+ const base=seen||isPlayer?'empty':type;
+ px(0,0,32,32,PALETTE[base]||PALETTE.dirt);
+ if(base==='dirt'||base==='hidden'||['gold','gem','energy'].includes(base)){
+   for(let k=0;k<10;k++){const x=hash(k*37+4)%30,y=hash(k*61+19)%30;px(x,y,2+(k%2),2,k%3?'#8e6043':'#563b32')}
+   px(0,28,32,4,'#5b3d32');px(3,5,6,2,'#9c6e4c');px(22,24,5,2,'#a36e4a');px(16,3,2,3,'#4c342e');
+ }
+ if(base==='rock'){
+   px(2,3,27,24,'#697487');px(3,4,12,4,'#8994a2');px(19,5,10,7,'#454c60');px(8,13,20,3,'#414858');px(6,17,4,12,'#424959');px(12,19,15,8,'#798497');px(16,20,4,7,'#424959');px(0,29,32,3,'#333949');px(7,7,4,2,'#a5afba');px(23,22,3,3,'#a1a9b9');
+ }
+ if(base==='lava'){
+   px(0,3,32,5,'#e7652a');px(0,10,32,7,'#ffab37');px(0,18,32,8,'#d64c1e');px(0,28,32,4,'#6b2927');px(5,6,7,4,'#ffdd68');px(20,19,9,4,'#ffcf54');px(15,12,3,4,'#fff0a1');const f=frame%4;px(5+f*2,6+(f%2)*2,4,3,'#ffe07a');px(21-f,19-(f%3)*3,5,4,'#ffd15c');px(12,24-f*3,3,3,'#ffeb99');px(12,27-f*3,2,2,'#fbc45e');
+ }
+ if(base==='exit'){
+   // Dark mine shaft with a wooden ladder, matching the existing 32px pixel-art tiles.
+   px(4,0,24,32,'#171822');px(5,0,22,32,'#27232b');
+   px(4,0,4,32,'#574034');px(24,0,4,32,'#574034');
+   px(9,1,4,31,'#a7753c');px(19,1,4,31,'#a7753c');
+   px(10,1,2,31,'#e3b66b');px(20,1,2,31,'#e3b66b');
+   for(let rung=5;rung<32;rung+=6){px(11,rung,11,4,'#80522e');px(11,rung,11,2,'#f0c478');}
+   px(3,0,26,3,'#6f5b4b');px(3,0,26,1,'#ad8c64');
+   px(3,29,26,3,'#9e7d52');px(3,29,26,1,'#e6c07a');
+ }
+ if(base==='gold'){
+   px(9,19,17,8,'#b9712d');px(6,15,19,9,'#efb83d');px(11,11,12,9,'#ffdb62');px(13,13,5,3,'#fff0a5');px(7,23,19,3,'#925127');
+ }
+ if(base==='gem'){
+   px(12,5,9,4,'#d3fcf4');px(8,9,17,5,'#53e0d8');px(5,14,23,5,'#1fb7bd');px(9,19,15,6,'#147c9f');px(13,25,7,4,'#14577b');px(13,9,6,11,'#c2f9ef');px(20,12,4,9,'#2388a9');
+ }
+ if(base==='energy'){
+   px(10,7,12,3,'#e3e7ce');px(9,10,14,3,'#afc6ab');px(12,13,8,12,'#2b7b55');px(10,16,12,10,'#49cd83');px(13,17,4,6,'#b7ff9e');px(9,26,14,3,'#275642');px(13,4,6,4,'#d1d7c2');px(15,2,3,3,'#f3f2d2');px(9,14,2,12,'#203c3a');px(21,14,2,12,'#203c3a');
+ }
+ if(base==='hidden'){
+   px(18,8,3,13,'#f2cc74');px(13,13,13,3,'#f2cc74');px(19,11,2,6,'#fff5c0');
+ }
+ if(base==='monster'){
+   px(2,10,9,7,'#578443');px(22,10,8,7,'#578443');px(4,11,4,3,'#b2c277');px(24,11,4,3,'#b2c277');px(9,6,15,17,'#679d4b');px(11,4,11,5,'#80b95b');px(8,14,18,11,'#4e7d3b');px(10,12,5,4,'#fff4d2');px(20,12,5,4,'#fff4d2');px(12,13,3,3,'#b82f30');px(21,13,3,3,'#b82f30');px(15,19,6,2,'#29372b');px(15,21,2,3,'#fff4d2');px(20,21,2,3,'#fff4d2');px(8,23,17,5,'#6b4b38');px(9,28,5,4,'#353d31');px(21,28,5,4,'#353d31');
+ }
+ if(isPlayer){
+   // Separate arm and pickaxe are animated in three visible frames.
+   // Mirroring makes the miner swing towards the dug cell.
+   c.save();if(direction<0){c.translate(32,0);c.scale(-1,1)}
+   px(9,8,15,4,'#e9b13e');px(7,12,19,4,'#ffda59');px(15,6,6,5,'#fff3a2');px(10,16,13,8,'#e5ae84');px(10,19,3,3,'#312c34');px(20,19,3,3,'#312c34');px(12,24,12,5,'#437cbd');px(11,29,6,3,'#342e41');px(20,29,6,3,'#342e41');px(13,26,8,2,'#6da6c6');
+   if(attack){
+     const phase=frame%4;
+     // A clearly visible pickaxe arc: raised -> overhead -> strike -> follow-through.
+     if(direction===0){
+       // Downward strike: pickaxe starts overhead and ends below the miner.
+       // No horizontal mirror, body rotation, or CSS shake.
+       const angles=[-2.9,-2.35,-1.55,-1.35];
+       c.save();c.translate(20,22);c.rotate(angles[phase]);
+       px(-2,-3,5,5,'#e5ae84');px(-1,-24,3,25,'#9d7659');
+       px(-10,-27,20,4,'#dce4df');px(-11,-26,4,3,'#f7f6dc');px(8,-25,3,3,'#81949b');
+       c.restore();
+       if(phase>=2){px(11,29,3,2,'#f8db76');px(17,30,2,2,'#e9b65c');px(23,29,2,2,'#fff0a8')}
+     }else{
+       const angles=[-1.18,-.55,.65,1.22];
+       c.save();c.translate(23,23);c.rotate(angles[phase]);
+       px(-2,-3,5,5,'#e5ae84');px(-1,-24,3,25,'#9d7659');
+       px(-10,-27,20,4,'#dce4df');px(-11,-26,4,3,'#f7f6dc');px(8,-25,3,3,'#81949b');
+       c.restore();
+       if(phase===2||phase===3){px(27,19,3,3,'#f8db76');px(29,23,2,2,'#e9b65c');px(25,26,2,2,'#fff0a8')}
+     }
+   }else{
+     px(23,21,5,5,'#e5ae84');px(4,15,3,12,'#96765b');px(2,14,11,3,'#c6c8c7');px(6,13,4,2,'#eef0d8');
+   }
+   c.restore();
+ }
+ return canvas;
+}
+function render(){board.replaceChildren();for(let b=0;b<H;b++)for(let a=0;a<W;a++){let i=idx(a,b),t=cells[i],isPlayer=a===x&&b===y,seen=visited.has(i),el=document.createElement('button');el.type='button';el.className='cell '+(isPlayer?'player':seen?'empty':t)+(isPlayer&&performance.now()<swingUntil?' swing':'')+(accessible(a,b)?' reachable':'');const swinging=isPlayer&&performance.now()<swingUntil;const phase=swinging?Math.min(3,Math.floor((performance.now()-swingStart)/85)):0;el.appendChild(paintSprite(t,isPlayer,seen,phase,swinging,swingDirection));if(i===chestPosition&&seen&&performance.now()<chestFlashUntil){const flash=document.createElement('span');flash.className='chest-opening';flash.innerHTML='<span class="chest-spark">✨🪙✨</span>';el.append(flash)}if(i===chestPosition&&!seen){const chest=document.createElement('span');chest.className='chest-mark';chest.textContent='';chest.classList.add('wooden-chest');if(treasure.chests[String(level)])chest.classList.add('claimed');el.append(chest)}if(i===relicPosition&&!treasure.relics[relicForLevel(level).id]&&!seen){const mark=document.createElement('span');mark.className='relic-mark';mark.textContent='✨';el.append(mark)}el.setAttribute('aria-label',isPlayer?'Bergarbeiter':t+' '+(a+1)+','+(b+1));el.disabled=!accessible(a,b);el.addEventListener('click',()=>move(a,b));board.append(el)}
+$('energy').textContent='⚡ '+energy+'/'+MAX;$('score').textContent='★ '+score;$('best').textContent='🏆 '+(progress.best[level]||0);
+$('summary').hidden=!ended;$('next').disabled=!won||level>=TOTAL_LEVELS;$('overlayNext').hidden=!won||level>=TOTAL_LEVELS;
+if(ended){$('resultRelic').textContent=won?(newRelic?newRelic.icon+' '+newRelic.name:'Kein neues Relikt'):'Nicht gesichert';$('resultGold').textContent=won?'+'+newGold+' Gold':'0 Gold (nicht gesichert)';$('resultWallet').textContent=treasure.gold+' Gold';$('resultTitle').textContent=won?'🏁 LEVEL '+level+' GESCHAFFT':'💀 GAME OVER – '+gameOverReason;$('resultScore').textContent=score+' Punkte';$('resultEnergy').textContent=energy+' / '+MAX;$('resultMoves').textContent=String(moves);$('resultStars').textContent=won?'⭐'.repeat(starsFor(level,score)):'–';$('resultBest').textContent=(progress.best[level]||0)+' Punkte';$('resultBestStars').textContent='⭐'.repeat(progress.stars[level]||0)+'☆'.repeat(3-(progress.stars[level]||0));$('restart').textContent=won?'↻ ERNEUT SPIELEN':'↻ NEUER VERSUCH?';$('overlayRestart').textContent=won?'↻ ERNEUT SPIELEN':'↻ NEUER VERSUCH?';$('resultHint').textContent=won?(starsFor(level,score)===3?'Perfekt! Du hast alle drei Sterne geholt.':'Noch '+Math.max(0,TARGETS[level][1]-score)+' Punkte bis zu drei Sternen. Versuch eine andere Schatzroute!'):'Versuche eine andere Route. Du kannst sofort neu starten oder ein freigeschaltetes Level wählen.'}}
+$('restart').addEventListener('click',newGame);$('overlayRestart').addEventListener('click',newGame);$('overlayChoose').addEventListener('click',()=>{showScreen('levelsScreen')});$('overlayNext').addEventListener('click',()=>{if(won&&level<TOTAL_LEVELS){level++;newGame();showScreen('gameScreen')}});$('choose').addEventListener('click',()=>{showScreen('levelsScreen')});$('next').addEventListener('click',()=>{if(won&&level<TOTAL_LEVELS){level++;newGame();showScreen('gameScreen')}});newGame();
+
+// v0.11: only one smartphone screen visible at a time; no scrolling between views.
+let lastScreen='homeScreen';
+function showScreen(id){
+ if(id==='settingsScreen')lastScreen=document.querySelector('.screen.active')?.id||'homeScreen';
+ for(const el of document.querySelectorAll('.screen')){const on=el.id===id;el.classList.toggle('active',on);el.setAttribute('aria-hidden',String(!on));}
+ if(id==='campScreen')updateCamp();
+ if(id==='levelsScreen'){selectedWorld=WORLDS.findIndex(w=>level>=w.from&&level<=w.to);drawLevels()}
+}
+$('devGold').addEventListener('click',()=>{
+ if(!confirm('500 Testgold zur Goldkasse hinzufügen? Bereits gekaufte Upgrades bleiben erhalten.'))return;
+ treasure.gold+=500;
+ try{localStorage.setItem(TREASURE_STORE,JSON.stringify(treasure))}catch(e){alert('Speichern fehlgeschlagen.');return}
+ $('devGold').textContent='✅ +500 GOLD GUTGESCHRIEBEN';
+ setTimeout(()=>$('devGold').textContent='🧪 +500 TESTGOLD',1400);
+});
+$('homePlay').addEventListener('click',()=>showScreen('levelsScreen'));
+$('homeCamp').addEventListener('click',()=>showScreen('campScreen'));
+$('campBack').addEventListener('click',()=>showScreen('homeScreen'));
+$('homeSettings').addEventListener('click',()=>showScreen('settingsScreen'));
+$('homeHelp').addEventListener('click',()=>showScreen('helpScreen'));
+$('levelsBack').addEventListener('click',()=>showScreen('homeScreen'));
+$('gameBack').addEventListener('click',()=>showScreen('levelsScreen'));
+$('gameSettings').addEventListener('click',()=>showScreen('settingsScreen'));
+$('settingsBack').addEventListener('click',()=>showScreen(lastScreen));
+$('helpBack').addEventListener('click',()=>showScreen('homeScreen'));
+</script></body></html>
