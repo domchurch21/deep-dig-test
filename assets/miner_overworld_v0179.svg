@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 46" shape-rendering="crispEdges">
+<!-- pack and tool silhouette -->
+<path fill="#231e22" d="M7 20h7v18H6V23h1zM26 21h5v16h-6z"/>
+<path fill="#76512f" d="M7 23h7v12H7zM26 23h4v12h-4z"/>
+<path fill="#ad7a40" d="M8 24h5v3H8zM27 24h2v8h-2z"/>
+<!-- pickaxe raised over shoulder -->
+<path fill="#332d2b" d="M29 9h2v22h-2z"/><path fill="#a78c6d" d="M29 11h2v18h-2z"/>
+<path fill="#2b313b" d="M22 7h3V5h8v2h3v3h-4V9h-7v3h-3z"/>
+<path fill="#d1d9de" d="M23 7h3V6h7v1h2v1h-5v1h-6z"/>
+<!-- boots -->
+<path fill="#211b20" d="M11 37h6v4h1v3H7v-3h2v-3h2zM20 37h6v4h3v3H18v-3h2z"/>
+<path fill="#80502f" d="M10 38h6v3h1v1H9v-1h1zM21 38h5v3h2v1h-8v-1h1z"/>
+<path fill="#ba7940" d="M10 39h5v1h-5zM21 39h4v1h-4z"/>
+<!-- trousers -->
+<path fill="#23252d" d="M11 30h15v9h-6v-6h-3v6h-6z"/>
+<path fill="#305d8a" d="M12 30h13v7h-4v-5h-5v5h-4z"/>
+<path fill="#558db9" d="M12 31h3v5h-3zM21 31h3v4h-3z"/>
+<!-- arms and gloves -->
+<path fill="#25242a" d="M7 24h5v9H8v2H5v-7h2zM25 24h5v9h-2v2h-4v-6h1z"/>
+<path fill="#376e9c" d="M8 24h4v7H8zM25 24h4v7h-4z"/>
+<path fill="#8db2c9" d="M8 25h2v4H8zM26 25h2v3h-2z"/>
+<path fill="#3a2a21" d="M6 31h6v5H6zM24 31h6v5h-6z"/>
+<path fill="#b77a48" d="M7 32h4v3H7zM25 32h4v3h-4z"/>
+<!-- torso overalls -->
+<path fill="#22242a" d="M11 21h15v14H11z"/>
+<path fill="#3677aa" d="M12 22h13v11H12z"/>
+<path fill="#5d9ac4" d="M12 23h4v9h-4z"/>
+<path fill="#bf803f" d="M13 23h2v9h-2zM22 23h2v9h-2zM13 30h11v2H13z"/>
+<path fill="#dcb064" d="M14 25h2v2h-2zM22 25h2v2h-2z"/>
+<path fill="#29262a" d="M17 31h5v3h-5z"/><path fill="#d6bd7c" d="M18 31h3v2h-3z"/>
+<!-- head / ears -->
+<path fill="#30251f" d="M11 12h15v11H11zM9 16h3v5H9zM25 16h3v5h-3z"/>
+<path fill="#dca06a" d="M12 13h13v9H12zM10 17h3v3h-3zM25 17h2v3h-2z"/>
+<path fill="#f3bd81" d="M13 14h9v4h-9z"/>
+<path fill="#4a332a" d="M14 17h2v2h-2zM21 17h2v2h-2zM17 21h5v1h-5z"/>
+<path fill="#a96544" d="M18 19h2v2h-2z"/>
+<!-- helmet outline and gold shell -->
+<path fill="#2a2425" d="M10 9h2V6h3V4h7v1h3v2h2v5h2v3H8v-3h2z"/>
+<path fill="#b2762d" d="M11 9h2V7h3V5h6v1h3v3h1v4H10v-2h1z"/>
+<path fill="#f0bb47" d="M13 8h2V6h8v2h2v4H11v-2h2z"/>
+<path fill="#ffdf77" d="M14 7h7v2h-7zM12 10h11v1H12z"/>
+<path fill="#6f4b28" d="M10 12h18v2H9v-1h1z"/>
+<path fill="#e6ad45" d="M11 12h16v1H11z"/>
+<!-- lamp, bezel and glow -->
+<path fill="#3c3b3c" d="M16 7h7v7h-7z"/>
+<path fill="#f2e0a0" d="M17 8h5v5h-5z"/>
+<path fill="#fffdf0" d="M18 9h3v3h-3z"/>
+<path fill="#fff5a6" d="M19 8h2v1h-2z"/>
+</svg>
