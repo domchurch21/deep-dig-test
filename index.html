@@ -24,6 +24,7 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{d
 .workshop-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.workshop-head h3{margin-bottom:0}.workshop-tag{font-size:9px;color:#f5d896;border:1px solid #ad8b4c;padding:5px;white-space:nowrap}.workshop-items{display:grid;gap:10px;margin-top:12px}.workshop-item{display:grid;grid-template-columns:42px minmax(0,1fr);gap:9px;background:#1b2030;border:1px solid #5b586d;padding:10px}.workshop-icon{font-size:27px;display:grid;place-items:center;background:#353347;border:1px solid #6e6675;min-height:43px}.workshop-name{font-weight:900;font-size:12px;color:#ffe4a3}.workshop-description{font-size:10px;color:#c8c1cb;line-height:1.5;margin:5px 0}.workshop-levels{display:flex;gap:5px;margin:7px 0}.workshop-level{font-size:10px;flex:1;text-align:center;padding:4px 2px;border:1px solid #62566a;color:#b7aabd}.workshop-price{font-size:11px;color:#f8d78b}.workshop-buy{width:100%;margin-top:8px;border:1px solid #786f80;background:#393849;color:#a9a2b4;font-size:11px;font-weight:800;padding:9px;cursor:not-allowed}.workshop-note{font-size:10px;line-height:1.5;color:#d4bd8d;margin:11px 0 0}
 .gold-coin{display:inline-block;vertical-align:-2px;width:16px;height:16px;border:2px solid #8c4e13;border-radius:50%;background:radial-gradient(circle at 35% 28%,#fff1a4 0 16%,#ffd348 32%,#e99b19 68%,#a85c12 100%);box-shadow:inset 0 0 0 2px #f6c443,1px 2px 0 #52351d}.workshop-buy:not(:disabled){cursor:pointer;background:#b77828;border-color:#f8d480;color:#231c18;box-shadow:2px 2px #151621}.workshop-buy:focus-visible{outline:3px solid #ffe18d}.workshop-level.owned{background:#394d3a;color:#c5f5a9;border-color:#79a36e}.workshop-message{font-size:11px;color:#f4d99a;line-height:1.5;margin:8px 0}.workshop-message:empty{display:none}
 .dev-mode-note{font-size:10px;color:#ffe6a6;line-height:1.5;text-align:center;padding:4px 8px}
+.purchase-overlay[hidden]{display:none}.purchase-overlay{position:fixed;inset:0;z-index:9999;background:#080913d9;display:grid;place-items:center;padding:20px}.purchase-dialog{width:min(100%,390px);background:#222334;border:3px solid #b88b43;box-shadow:0 0 0 4px #11121e,8px 9px 0 #080913;padding:20px 16px;text-align:center;color:#f8e8bc}.purchase-symbol{font-size:43px;margin:3px auto 10px}.purchase-heading{font-size:18px;font-weight:900;color:#ffe19a;line-height:1.4}.purchase-description{font-size:12px;line-height:1.6;color:#d5c8bd;margin:10px 0 15px}.purchase-stats{background:#141824;border:1px solid #6f6070;padding:12px;display:grid;gap:10px;text-align:left;font-size:12px}.purchase-stats div{display:flex;justify-content:space-between;gap:12px}.purchase-stats strong{color:#ffdb76}.purchase-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}.purchase-actions button{font:900 12px ui-monospace,monospace;padding:13px 5px;min-height:47px;border:2px solid #a58d64;cursor:pointer}.purchase-cancel{background:#323243;color:#e9dfd0}.purchase-confirm{background:#d69b42;color:#1a1720}.purchase-actions button:focus-visible{outline:3px solid #fff2ab}
 /* v0.14 relic discoveries */
 .camp-relic{cursor:pointer;font:900 21px ui-monospace,monospace}.camp-relic.found{border-color:#d9b76c;background:#403c45}.camp-relic:focus-visible{outline:3px solid #ffda81}.camp-relic-detail{min-height:57px;padding:10px;background:#1b2030;border:1px solid #656078;font-size:11px;line-height:1.55;color:#e7d5b4}.cell{position:relative}.relic-mark{position:absolute;right:0;top:0;font-size:13px;line-height:1;filter:drop-shadow(0 0 3px #e9d77c);pointer-events:none}.relic-pop{color:#b8efff;border-color:#7dbde5}.relic-found{font-size:12px;color:#d5efff;font-weight:900;padding:4px 0}
 /* v0.14 treasure chests */
@@ -206,11 +207,24 @@ const WORKSHOP_STORE='deepdig_test_v015_workshop';
 const WORKSHOP_IDS=['pickaxe','backpack','lantern'];
 let workshopLevels={pickaxe:0,backpack:0,lantern:0};
 try{const stored=JSON.parse(localStorage.getItem(WORKSHOP_STORE)||'null');if(stored&&typeof stored==='object')for(const id of WORKSHOP_IDS){const n=Number(stored[id]);if(Number.isInteger(n)&&n>=0&&n<=3)workshopLevels[id]=n}}catch(e){}
+let pendingPurchase=null,previousPurchaseFocus=null;
+function closePurchaseDialog(){const overlay=$('purchaseOverlay');overlay.hidden=true;pendingPurchase=null;if(previousPurchaseFocus&&previousPurchaseFocus.isConnected)previousPurchaseFocus.focus();previousPurchaseFocus=null}
+function openPurchaseDialog(id){
+ const idx=WORKSHOP_IDS.indexOf(id);if(idx<0)return;
+ const level=workshopLevels[id],item=WORKSHOP_PREVIEW[idx];if(level>=3||treasure.gold<item.prices[level])return;
+ pendingPurchase=id;previousPurchaseFocus=document.activeElement;
+ $('purchaseSymbol').textContent=item.icon;
+ $('purchaseTitle').textContent=item.name+' · STUFE '+(level+1);
+ $('purchaseDescription').textContent='Möchtest du diese Verbesserung dauerhaft kaufen?';
+ $('purchasePrice').textContent=item.prices[level]+' GOLD';
+ $('purchaseRemaining').textContent=(treasure.gold-item.prices[level])+' GOLD';
+ $('purchaseOverlay').hidden=false;$('purchaseCancel').focus();
+}
 function purchaseWorkshop(id){
  const idx=WORKSHOP_IDS.indexOf(id);if(idx<0)return;
  const level=workshopLevels[id],item=WORKSHOP_PREVIEW[idx];if(level>=3)return;
  const price=item.prices[level];if(treasure.gold<price)return;
- if(!confirm(item.name+' auf Stufe '+(level+1)+' verbessern?\\nKosten: '+price+' Gold\\nVerbleibend: '+(treasure.gold-price)+' Gold'))return;
+ 
  const previousGold=treasure.gold;treasure.gold-=price;workshopLevels[id]=level+1;
  try{localStorage.setItem(WORKSHOP_STORE,JSON.stringify(workshopLevels));localStorage.setItem(TREASURE_STORE,JSON.stringify(treasure))}
  catch(e){treasure.gold=previousGold;workshopLevels[id]=level;try{localStorage.setItem(WORKSHOP_STORE,JSON.stringify(workshopLevels));localStorage.setItem(TREASURE_STORE,JSON.stringify(treasure))}catch(_){}$('workshopMessage').textContent='⚠️ Speichern fehlgeschlagen. Kauf nicht übernommen.';updateCamp();return}
@@ -227,7 +241,7 @@ function renderWorkshopPreview(){
   const levels=document.createElement('div');levels.className='workshop-levels';
   item.prices.forEach((price,i)=>{const tier=document.createElement('span');tier.className='workshop-level'+(i<level?' owned':'');tier.title=item.effects[i];tier.textContent='S'+(i+1)+' · '+(i<level?'✓':price+' Gold');levels.append(tier)});
   const effect=document.createElement('div');effect.className='workshop-price';effect.textContent=level?'Aktiv ab Test 3: '+item.effects[level-1]:'Stufe 1: '+item.effects[0];
-  const buy=document.createElement('button');buy.type='button';buy.className='workshop-buy';buy.disabled=level>=3||treasure.gold<item.prices[level];buy.textContent=level>=3?'✓ MAXIMALE STUFE':treasure.gold<item.prices[level]?'🔒 '+item.prices[level]+' GOLD BENÖTIGT':'KAUFEN · '+item.prices[level]+' GOLD';buy.addEventListener('click',()=>purchaseWorkshop(id));
+  const buy=document.createElement('button');buy.type='button';buy.className='workshop-buy';buy.disabled=level>=3||treasure.gold<item.prices[level];buy.textContent=level>=3?'✓ MAXIMALE STUFE':treasure.gold<item.prices[level]?'🔒 '+item.prices[level]+' GOLD BENÖTIGT':'KAUFEN · '+item.prices[level]+' GOLD';buy.addEventListener('click',()=>openPurchaseDialog(id));
   info.append(title,desc,levels,effect,buy);card.append(art,info);root.append(card);
  }
 }
@@ -470,6 +484,10 @@ function showScreen(id){
  if(id==='campScreen')updateCamp();
  if(id==='levelsScreen'){selectedWorld=WORLDS.findIndex(w=>level>=w.from&&level<=w.to);drawLevels()}
 }
+$('purchaseCancel').addEventListener('click',closePurchaseDialog);
+$('purchaseConfirm').addEventListener('click',()=>{const id=pendingPurchase;closePurchaseDialog();if(id)purchaseWorkshop(id)});
+$('purchaseOverlay').addEventListener('click',e=>{if(e.target===$('purchaseOverlay'))closePurchaseDialog()});
+document.addEventListener('keydown',e=>{if($('purchaseOverlay').hidden)return;if(e.key==='Escape'){e.preventDefault();closePurchaseDialog()}else if(e.key==='Tab'){const a=$('purchaseCancel'),b=$('purchaseConfirm');if(e.shiftKey&&document.activeElement===a){e.preventDefault();b.focus()}else if(!e.shiftKey&&document.activeElement===b){e.preventDefault();a.focus()}}});
 $('devGold').addEventListener('click',()=>{
  if(!confirm('500 Testgold zur Goldkasse hinzufügen? Bereits gekaufte Upgrades bleiben erhalten.'))return;
  treasure.gold+=500;
@@ -487,4 +505,4 @@ $('gameBack').addEventListener('click',()=>showScreen('levelsScreen'));
 $('gameSettings').addEventListener('click',()=>showScreen('settingsScreen'));
 $('settingsBack').addEventListener('click',()=>showScreen(lastScreen));
 $('helpBack').addEventListener('click',()=>showScreen('homeScreen'));
-</script></body></html>
+</script><div class="purchase-overlay" id="purchaseOverlay" hidden><div class="purchase-dialog" role="dialog" aria-modal="true" aria-labelledby="purchaseTitle" aria-describedby="purchaseDescription"><div class="purchase-symbol" id="purchaseSymbol" aria-hidden="true">⛏️</div><div class="purchase-heading" id="purchaseTitle">UPGRADE KAUFEN?</div><p class="purchase-description" id="purchaseDescription"></p><div class="purchase-stats"><div><span>KOSTEN</span><strong id="purchasePrice"></strong></div><div><span>DANACH IN DER GOLDKASSE</span><strong id="purchaseRemaining"></strong></div></div><div class="purchase-actions"><button type="button" class="purchase-cancel" id="purchaseCancel">ABBRECHEN</button><button type="button" class="purchase-confirm" id="purchaseConfirm">KAUFEN ✓</button></div></div></div></body></html>
