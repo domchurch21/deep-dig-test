@@ -183,59 +183,9 @@ const LABELS=['','Erste Schritte: Finde den Ausgang.','Wähle: kurzer Weg oder m
 const WORLDS=[{name:'DIE ERSTEN MINEN',from:1,to:10,theme:'classic'},{name:'DIE KUPFERMINE',from:11,to:15,theme:'copper'},{name:'DIE KRISTALLHÖHLEN',from:16,to:20,theme:'crystal'},{name:'DER LAVAKERN',from:21,to:25,theme:'volcano'}];
 let selectedWorld=0;
 LABELS.push(...["Kupfermine: Die erste tiefere Schicht.","Rostrote Tunnel und kostbare Funde.","Finde den Weg durch Felsadern.","Ein guter Umweg spart Energie.","Kupfermine: Die letzte Prüfung.","Kristallhöhle: Glitzernde Versuchung.","Nicht jeder Kristall lohnt den Umweg.","Tief in den blauen Gängen.","Kostbare Schätze, knappe Energie.","Kristallhöhle: Das große Finale.","Lavakern: Meide die heißen Felder.","Wähle deinen Weg zwischen Lava und Stein.","Die Goblins bewachen den Abstieg.","Ein letzter Weg durch die Glut.","Finale: Erreiche den tiefsten Ausgang!"]);
-const RC23_DEMO=new URLSearchParams(location.search).get('migrationV14')==='1';
-const RC22_DEMO=!RC23_DEMO&&new URLSearchParams(location.search).get('migrationDemo')==='1';
-const STORE=RC23_DEMO?'deepdig_rc23_migrated_progress':RC22_DEMO?'deepdig_rc22_demo_progress':'deepdig_rc1_v015_progress',
- OLD_STORE='deepdig_rc1_v015_legacy_unused',
- TREASURE_STORE=RC23_DEMO?'deepdig_rc23_migrated_treasure':RC22_DEMO?'deepdig_rc22_demo_treasure':'deepdig_rc1_v015_treasure';
-// RC2.1: isolated, opt-in migration preparation. No reads or writes unless ?migrationCheck=1.
-function validateV014Snapshot(snapshot){
- if(!snapshot||typeof snapshot!=='object'||Array.isArray(snapshot))return false;
- const p=snapshot.progress,t=snapshot.treasure;
- if(!p||typeof p!=='object'||Array.isArray(p)||!t||typeof t!=='object'||Array.isArray(t))return false;
- if(!Number.isInteger(Number(p.unlocked))||Number(p.unlocked)<1||Number(p.unlocked)>25)return false;
- if(!Number.isFinite(Number(t.gold))||Number(t.gold)<0)return false;
- for(const field of ['best','stars'])if(!p[field]||typeof p[field]!=='object'||Array.isArray(p[field]))return false;
- for(const field of ['claimed','starClaims','relics','chests'])if(!t[field]||typeof t[field]!=='object'||Array.isArray(t[field]))return false;
- return true;
-}
-function checkV014MigrationReadiness(){
- const sample={progress:{unlocked:8,best:{'1':260},stars:{'1':3}},treasure:{gold:345,claimed:{},starClaims:{},relics:{},chests:{}}};
- const ok=validateV014Snapshot(sample)&&!validateV014Snapshot({progress:{unlocked:0},treasure:{gold:-1}});
- document.documentElement.dataset.migrationCheck=ok?'passed':'failed';
- return ok;
-}
-if(new URLSearchParams(location.search).get('migrationCheck')==='1'){
- try{checkV014MigrationReadiness()}catch(e){document.documentElement.dataset.migrationCheck='failed'}
-}
-
+const STORE='deepdig_rc1_v015_progress',OLD_STORE='deepdig_rc1_v015_legacy_unused',TREASURE_STORE='deepdig_rc1_v015_treasure';
 const TARGETS={"1":[190,250],"2":[190,260],"3":[190,240],"4":[190,230],"5":[190,260],"6":[200,260],"7":[170,220],"8":[190,250],"9":[170,230],"10":[120,160]};
 Object.assign(TARGETS,{"11":[90,150],"12":[90,150],"13":[90,150],"14":[90,150],"15":[90,150],"16":[90,150],"17":[90,150],"18":[90,150],"19":[90,150],"20":[90,150],"21":[90,150],"22":[90,150],"23":[90,150],"24":[90,150],"25":[90,150]});
-// RC2.3: use the EXACT v0.14 key names, but only in opt-in, isolated test mode.
-// Never read production-origin storage (different origin), never touch normal RC1/RC2.2 saves.
-function migrateV014FromKeys(storage,sourceProgressKey,sourceTreasureKey,destProgressKey,destTreasureKey){
- const read=key=>{try{const raw=storage.getItem(key);return raw===null?null:JSON.parse(raw)}catch(e){return null}};
- const oldProgress=read(sourceProgressKey),oldTreasure=read(sourceTreasureKey);
- if(!validateV014Snapshot({progress:oldProgress,treasure:oldTreasure}))return false;
- // Destination values always win. Copy the original JSON without recalculating or awarding gold.
- for(const [source,destination] of [[sourceProgressKey,destProgressKey],[sourceTreasureKey,destTreasureKey]]){
-  try{if(storage.getItem(destination)===null){const raw=storage.getItem(source);if(raw!==null)storage.setItem(destination,raw)}}catch(e){return false}
- }
- return true;
-}
-function initializeRC23(){
- if(!RC23_DEMO)return;
- const oldProgressKey='deepdig_v07_progress',oldTreasureKey='deepdig_v014_treasure';
- const fixtureProgress={unlocked:8,best:{'1':260,'2':210,'3':185,'4':230,'5':200,'6':180,'7':155},stars:{'1':3,'2':2,'3':1,'4':2,'5':2,'6':1,'7':1}};
- const fixtureTreasure={gold:345,claimed:{},starClaims:{'1':3,'2':2},relics:{'1':true,'2':true},chests:{'1':true}};
- try{
-  // Only initialize absent source keys; preserve any existing values.
-  if(localStorage.getItem(oldProgressKey)===null)localStorage.setItem(oldProgressKey,JSON.stringify(fixtureProgress));
-  if(localStorage.getItem(oldTreasureKey)===null)localStorage.setItem(oldTreasureKey,JSON.stringify(fixtureTreasure));
-  migrateV014FromKeys(localStorage,oldProgressKey,oldTreasureKey,STORE,TREASURE_STORE);
- }catch(e){/* Storage can be disabled. Never prevent game startup. */}
-}
-initializeRC23();
 let progress={unlocked:1,best:{},stars:{}};
 let treasure={gold:0,claimed:{},starClaims:{},relics:{},chests:{}};
 try{const saved=JSON.parse(localStorage.getItem(TREASURE_STORE)||'null');if(saved&&typeof saved==='object'){treasure.gold=Math.max(0,Number(saved.gold)||0);treasure.claimed=saved.claimed&&typeof saved.claimed==='object'?saved.claimed:{};treasure.starClaims=saved.starClaims&&typeof saved.starClaims==='object'?saved.starClaims:{};treasure.relics=saved.relics&&typeof saved.relics==='object'?saved.relics:{};treasure.chests=saved.chests&&typeof saved.chests==='object'?saved.chests:{}}}catch(e){}
@@ -257,23 +207,7 @@ const WORKSHOP_PREVIEW=[
  {icon:'🎒',name:'ENERGIERUCKSACK',desc:'Beginne eine Mine mit etwas mehr Energie.',prices:[50,120,220],effects:['21 Startenergie','22 Startenergie','23 Startenergie']},
  {icon:'🏮',name:'GOLDLATERNE',desc:'Mehr Gold aus neuen Goldfeldern. Bereits gesammeltes Gold bleibt unverändert.',prices:[80,170,300],effects:['6 Gold / Feld','7 Gold / Feld','8 Gold / Feld']}
 ];
-const WORKSHOP_STORE=RC23_DEMO?'deepdig_rc23_migrated_workshop':RC22_DEMO?'deepdig_rc22_demo_workshop':'deepdig_rc1_v015_workshop';
-// RC2.2: simulate old v0.14 data only in dedicated demo keys, never in normal test or production keys.
-// This runs after all destination keys are declared and before workshop/progress are loaded.
-function initializeRC22Demo(){
- if(!RC22_DEMO)return;
- const sample={
-  progress:{unlocked:8,best:{'1':260,'2':210,'3':185,'4':230,'5':200,'6':180,'7':155},stars:{'1':3,'2':2,'3':1,'4':2,'5':2,'6':1,'7':1}},
-  treasure:{gold:345,claimed:{},starClaims:{'1':3,'2':2},relics:{'1':true,'2':true},chests:{'1':true}},
-  workshop:{pickaxe:0,backpack:0,lantern:0}
- };
- if(!validateV014Snapshot(sample))throw Error('RC2.2 sample validation failed');
- for(const [key,value] of [[STORE,sample.progress],[TREASURE_STORE,sample.treasure],[WORKSHOP_STORE,sample.workshop]]){
-  try{if(localStorage.getItem(key)===null)localStorage.setItem(key,JSON.stringify(value))}
-  catch(e){/* Private browsing may block persistence; game still starts. */}
- }
-}
-initializeRC22Demo();
+const WORKSHOP_STORE='deepdig_rc1_v015_workshop';
 const WORKSHOP_IDS=['pickaxe','backpack','lantern'];
 let workshopLevels={pickaxe:0,backpack:0,lantern:0};
 function upgradeTier(id){return workshopLevels[id]}
