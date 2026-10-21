@@ -48,7 +48,7 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{d
 
 // Eigenständiger, lizenzfreier Chiptune direkt mit Web Audio erzeugt.
 // Kein Download, kein Tracking, keine externen Assets. Start erst nach Nutzerinteraktion.
-const AUDIO_KEY='deepdig_test_audio_v010';
+const AUDIO_KEY=IS_TEST_BUILD?'deepdig_test_audio_v010':'deepdig_audio_v010';
 const audioSettings={music:35,sfx:65,muted:false};
 try{const saved=JSON.parse(localStorage.getItem(AUDIO_KEY)||'null');if(saved){for(const k of ['music','sfx'])if(Number.isFinite(saved[k]))audioSettings[k]=Math.max(0,Math.min(100,saved[k]));audioSettings.muted=!!saved.muted}}catch(e){}
 let audioCtx=null,musicBus=null,sfxBus=null,musicTimer=null,nextBeat=0,beatIndex=0;
@@ -183,7 +183,11 @@ const LABELS=['','Erste Schritte: Finde den Ausgang.','Wähle: kurzer Weg oder m
 const WORLDS=[{name:'DIE ERSTEN MINEN',from:1,to:10,theme:'classic'},{name:'DIE KUPFERMINE',from:11,to:15,theme:'copper'},{name:'DIE KRISTALLHÖHLEN',from:16,to:20,theme:'crystal'},{name:'DER LAVAKERN',from:21,to:25,theme:'volcano'}];
 let selectedWorld=0;
 LABELS.push(...["Kupfermine: Die erste tiefere Schicht.","Rostrote Tunnel und kostbare Funde.","Finde den Weg durch Felsadern.","Ein guter Umweg spart Energie.","Kupfermine: Die letzte Prüfung.","Kristallhöhle: Glitzernde Versuchung.","Nicht jeder Kristall lohnt den Umweg.","Tief in den blauen Gängen.","Kostbare Schätze, knappe Energie.","Kristallhöhle: Das große Finale.","Lavakern: Meide die heißen Felder.","Wähle deinen Weg zwischen Lava und Stein.","Die Goblins bewachen den Abstieg.","Ein letzter Weg durch die Glut.","Finale: Erreiche den tiefsten Ausgang!"]);
-const STORE='deepdig_rc1_v015_progress',OLD_STORE='deepdig_rc1_v015_legacy_unused',TREASURE_STORE='deepdig_rc1_v015_treasure';
+// RC3: production keys remain identical to v0.14. Test host keeps isolated RC1 saves.
+const IS_TEST_BUILD=location.pathname.startsWith('/deep-dig-test/');
+const STORE=IS_TEST_BUILD?'deepdig_rc1_v015_progress':'deepdig_v07_progress',
+ OLD_STORE=IS_TEST_BUILD?'deepdig_rc1_v015_legacy_unused':'deepdig_v06_progress',
+ TREASURE_STORE=IS_TEST_BUILD?'deepdig_rc1_v015_treasure':'deepdig_v014_treasure';
 const TARGETS={"1":[190,250],"2":[190,260],"3":[190,240],"4":[190,230],"5":[190,260],"6":[200,260],"7":[170,220],"8":[190,250],"9":[170,230],"10":[120,160]};
 Object.assign(TARGETS,{"11":[90,150],"12":[90,150],"13":[90,150],"14":[90,150],"15":[90,150],"16":[90,150],"17":[90,150],"18":[90,150],"19":[90,150],"20":[90,150],"21":[90,150],"22":[90,150],"23":[90,150],"24":[90,150],"25":[90,150]});
 let progress={unlocked:1,best:{},stars:{}};
@@ -207,7 +211,7 @@ const WORKSHOP_PREVIEW=[
  {icon:'🎒',name:'ENERGIERUCKSACK',desc:'Beginne eine Mine mit etwas mehr Energie.',prices:[50,120,220],effects:['21 Startenergie','22 Startenergie','23 Startenergie']},
  {icon:'🏮',name:'GOLDLATERNE',desc:'Mehr Gold aus neuen Goldfeldern. Bereits gesammeltes Gold bleibt unverändert.',prices:[80,170,300],effects:['6 Gold / Feld','7 Gold / Feld','8 Gold / Feld']}
 ];
-const WORKSHOP_STORE='deepdig_rc1_v015_workshop';
+const WORKSHOP_STORE=IS_TEST_BUILD?'deepdig_rc1_v015_workshop':'deepdig_v015_workshop';
 const WORKSHOP_IDS=['pickaxe','backpack','lantern'];
 let workshopLevels={pickaxe:0,backpack:0,lantern:0};
 function upgradeTier(id){return workshopLevels[id]}
@@ -323,7 +327,7 @@ function starsFor(n,points){const [two,three]=TARGETS[n];return 1+Number(points>
 let level=1,cells=[],visited=new Set(),x=3,y=0,energy=START,score=0,ended=false,won=false,moves=0,gameOverReason="",swingUntil=0,hitAt=-1,swingDirection=1,swingStart=0,swingTimer=null;
 const $=id=>document.getElementById(id),board=$('board'),status=$('status');
 
-const TUTORIAL_KEY='deepdig_test_tutorial_v012';
+const TUTORIAL_KEY=IS_TEST_BUILD?'deepdig_test_tutorial_v012':'deepdig_tutorial_v012';
 let tutorialDone=false,tutorialStep='';
 try{tutorialDone=localStorage.getItem(TUTORIAL_KEY)==='done'}catch(e){}
 const TUTORIAL={
