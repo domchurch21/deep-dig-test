@@ -627,7 +627,7 @@ function showScreen(id){
  if(id==='settingsScreen')lastScreen=document.querySelector('.screen.active')?.id||'homeScreen';
  for(const el of document.querySelectorAll('.screen')){const on=el.id===id;el.classList.toggle('active',on);el.setAttribute('aria-hidden',String(!on));}
  if(id==='campScreen')updateCamp();
- if(id==='levelsScreen'){stopMapTravel();if(mapMode==='levels'){mapWorld=worldOf(level);setMinerPosition(mapWorld)}drawLevels()}
+ if(id==='levelsScreen'){stopMapTravel();if(document.querySelector('#gameScreen.active'))mapMode='levels';if(mapMode==='levels'){mapWorld=worldOf(level);setMinerPosition(mapWorld)}drawLevels()}
 }
 $('purchaseCancel').addEventListener('click',closePurchaseDialog);
 $('purchaseConfirm').addEventListener('click',()=>{const id=pendingPurchase;closePurchaseDialog();if(id)purchaseWorkshop(id)});
