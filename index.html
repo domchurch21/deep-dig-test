@@ -39,7 +39,7 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{d
 .rare-crystal-mark{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;z-index:2}.rare-crystal-mark canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
 .rare-crystal-mark.claimed{opacity:.35;filter:grayscale(.7)}
 </style></head><body><main>
-<section id="homeScreen" class="screen active" aria-label="Startmenü"><div class="home-center"><div class="hero-emoji">⛏️</div><div class="hero-logo">DEEP DIG!</div><div class="screen-sub">TACTICAL DIGGER · v0.16.5 TEST</div><p class="tiny">Grabe dich durch die Mine. Plane deine Energie. Sammle Schätze!</p><button class="menu-btn" id="homePlay">▶ SPIELEN</button><button class="menu-btn secondary" id="homeCamp">🏕️ BERGARBEITER-LAGER</button><button class="menu-btn secondary" id="homeSettings">♫ EINSTELLUNGEN</button><button class="menu-btn secondary" id="homeHelp">? ANLEITUNG</button></div><div class="tiny">Für Smartphones entwickelt · Fortschritt wird lokal gespeichert</div></section>
+<section id="homeScreen" class="screen active" aria-label="Startmenü"><div class="home-center"><div class="hero-emoji">⛏️</div><div class="hero-logo">DEEP DIG!</div><div class="screen-sub">TACTICAL DIGGER · v0.16.6 TEST</div><p class="tiny">Grabe dich durch die Mine. Plane deine Energie. Sammle Schätze!</p><button class="menu-btn" id="homePlay">▶ SPIELEN</button><button class="menu-btn secondary" id="homeCamp">🏕️ BERGARBEITER-LAGER</button><button class="menu-btn secondary" id="homeSettings">♫ EINSTELLUNGEN</button><button class="menu-btn secondary" id="homeHelp">? ANLEITUNG</button></div><div class="tiny">Für Smartphones entwickelt · Fortschritt wird lokal gespeichert</div></section>
 <section id="campScreen" class="screen" aria-label="Bergarbeiter-Lager"><div class="screen-header"><button class="audio-toggle" id="campBack">← ZURÜCK</button><span class="screen-title">BERGARBEITER-LAGER</span></div><div class="camp-content"><div class="camp-banner"><div class="camp-art" aria-hidden="true">🌲 🏕️ ⛏️</div><h2>DEIN LAGER</h2><p class="camp-muted">Deine Beute. Deine Sammlung. Deine Werkstatt.</p></div><section class="camp-panel" aria-label="Goldkonto"><h3><span class="gold-coin" aria-hidden="true"></span> GOLDKASSE</h3><div class="camp-wallet" id="campGold" aria-live="polite">0 GOLD</div><p class="camp-muted">Gold wird nach erfolgreichen Minenausflügen sicher eingelagert. Kaufe dauerhafte Verbesserungen in der Werkstatt. Sie wirken ab sofort in neuen Minenausflügen.</p></section><section class="camp-panel" aria-label="Schatzkammer"><h3>💎 SCHATZKAMMER <span class="camp-pill" id="campRelicCount">0 / 10</span></h3><div class="camp-relics" id="campRelics" aria-label="Zehn Reliktplätze"></div><div id="campRelicDetail" class="camp-relic-detail" aria-live="polite">Tippe auf einen Reliktplatz, um mehr zu erfahren.</div><p class="camp-muted">Zehn geheimnisvolle Relikte warten darauf, entdeckt zu werden. Die Fundorte folgen im nächsten Testschritt.</p></section><section class="camp-panel" aria-label="Werkstatt"><div class="workshop-head"><h3>🔨 WERKSTATT</h3><span class="workshop-tag">v0.15 · DIE WERKSTATT</span></div><p class="camp-muted">Rüste deinen Bergarbeiter dauerhaft auf. Moderate Verbesserungen – alle Level bleiben auch ohne Upgrades spielbar.</p><div class="workshop-items" id="workshopItems"></div><div class="workshop-message" id="workshopMessage" aria-live="polite"></div><p class="workshop-note">🛡️ Käufe sind dauerhaft. Verbesserungen wirken sofort bei neuen Minenausflügen.</p></section></div></section>
 <section id="levelsScreen" class="screen" aria-label="Levelauswahl"><div class="screen-header"><button class="audio-toggle" id="levelsBack">← ZURÜCK</button><span class="screen-title">LEVELAUSWAHL</span></div><div class="screen-content"><p class="tiny">Wähle eine freigeschaltete Mine. Sterne zeigen deine Bestleistung.</p><div id="worldTabs" class="world-tabs" aria-label="Minenwelt auswählen"></div><p id="worldDescription" class="tiny"></p><div id="levels" class="levels"></div></div></section>
 <section id="gameScreen" class="screen game-screen" aria-label="Spiel"><div class="screen-header"><button class="audio-toggle" id="gameBack">← LEVEL</button><span class="screen-title" id="gameLevelTitle">MINE 01</span><button class="audio-toggle" id="gameSettings">♫</button></div><div class="goals" id="goals" aria-live="polite"></div><div class="hud"><span id="energy">⚡ 20/25</span><span id="score">★ 0</span><span id="best">🏆 0</span></div><div class="board-wrap"><div id="board" class="board" aria-label="Mine"></div><div id="goldPop" class="gold-pop" hidden aria-live="polite"></div><aside id="tutorialPanel" class="tutorial-panel" aria-label="Spielanleitung" hidden><div class="tutorial-title" id="tutorialTitle"></div><div class="tutorial-text" id="tutorialText"></div><div class="tutorial-legend" id="tutorialLegend" hidden></div><div class="tutorial-buttons"><button id="tutorialSkip" type="button">ÜBERSPRINGEN</button><button id="tutorialNext" class="primary" type="button">WEITER →</button></div></aside><section id="summary" class="summary" hidden role="dialog" aria-modal="true" aria-label="Levelergebnis" aria-live="polite"><h2 id="resultTitle"></h2><div class="resultline"><span>Punktestand</span><strong id="resultScore"></strong></div><div class="resultline"><span>Restenergie</span><strong id="resultEnergy"></strong></div><div class="resultline"><span>Züge</span><strong id="resultMoves"></strong></div><div class="resultline"><span>Sterne in dieser Runde</span><strong id="resultStars"></strong></div><div class="resultline"><span>Persönlicher Rekord</span><strong id="resultBest"></strong></div><div class="resultline"><span>Beste Sterne</span><strong id="resultBestStars"></strong></div><div class="resultline reward-line"><span>🪙 Neues Gold</span><strong id="resultGold">+0</strong></div><div class="resultline reward-line"><span>💎 Neues Relikt</span><strong id="resultRelic">–</strong></div><div class="resultline reward-line"><span>🪙 Goldkonto</span><strong id="resultWallet">0</strong></div><p class="notice" id="resultHint"></p><div class="overlay-actions"><button class="action" id="overlayRestart">↻ NEUER VERSUCH?</button><button class="action" id="overlayNext">NÄCHSTES LEVEL →</button><button class="action" id="overlayChoose">LEVELAUSWAHL</button></div></section></div><div class="status" id="status" aria-live="polite"></div><div class="game-actions"><button class="action" id="restart">↻ NEU STARTEN</button><button class="action" id="next">NÄCHSTES LEVEL →</button><button class="action" id="choose">LEVELAUSWAHL</button></div><div id="intro" hidden></div></section>
@@ -440,23 +440,39 @@ function paintSprite(type,isPlayer,seen,frame=0,attack=false,direction=1){
    px(12,5,9,4,'#d3fcf4');px(8,9,17,5,'#53e0d8');px(5,14,23,5,'#1fb7bd');px(9,19,15,6,'#147c9f');px(13,25,7,4,'#14577b');px(13,9,6,11,'#c2f9ef');px(20,12,4,9,'#2388a9');
  }
  if(base==='energy'){
-   // v0.16.5: supply crate, same energy tile and +3 gameplay effect.
-   // Chunky wooden body with metal corners and a yellow lightning-bolt emblem.
-   px(5,7,23,22,'#2a1c1c');px(7,5,19,4,'#3c261e');
-   px(8,6,17,3,'#a56832');px(6,9,21,3,'#d79a4d');
-   px(7,12,20,14,'#754322');px(9,14,16,10,'#97572b');
-   px(7,13,3,12,'#c17b36');px(24,13,3,12,'#63371f');
-   px(6,24,21,3,'#c58739');px(8,26,17,2,'#5c3521');
-   px(6,9,4,4,'#a7b0ae');px(7,10,2,2,'#d5d7c9');
-   px(23,9,4,4,'#73878a');px(24,10,2,2,'#c3c8b9');
-   px(6,23,4,4,'#899396');px(7,24,2,2,'#c9c9ae');
-   px(23,23,4,4,'#66777d');px(24,24,2,2,'#abb8b2');
-   px(11,14,12,10,'#4d2b1d');px(12,15,10,8,'#63351f');
-   // Pixel lightning, deliberately angular and readable at phone size.
-   px(17,13,5,3,'#ffe99c');px(15,16,6,3,'#ffcf57');
-   px(13,19,8,3,'#ffdf72');px(16,22,3,3,'#ffb93f');
-   px(14,23,3,3,'#ffe080');px(12,24,3,2,'#ffcf57');
-   px(12,16,2,2,'#fff0a9');px(16,14,2,2,'#fff6b9');
+   // v0.16.6: distinct square supply crate with oversized high-contrast lightning icon.
+   // All artwork stays inside the existing 32x32 pixel sprite.
+   px(3,4,26,26,'#251b1a');             // square outer outline
+   px(5,6,22,22,'#754421');             // wooden crate body
+   px(7,8,18,18,'#925629');             // brighter center wood
+   px(7,8,18,3,'#b47739');             // upper wood grain
+   px(7,23,18,3,'#64371e');            // lower wood grain
+   px(4,5,5,5,'#a9b4b2');             // four metal corner plates
+   px(23,5,5,5,'#7f9295');
+   px(4,24,5,5,'#7d8f91');
+   px(23,24,5,5,'#a2aca8');
+   px(5,6,3,3,'#d8dfcc');
+   px(24,6,3,3,'#c7d1c6');
+   px(5,25,3,3,'#bdc7bd');
+   px(24,25,3,3,'#d4d9c9');
+   // Large near-black lightning silhouette provides contrast at iPhone tile size.
+   px(16,8,10,3,'#2c1b1b');
+   px(14,11,10,3,'#2c1b1b');
+   px(12,14,10,4,'#2c1b1b');
+   px(17,18,8,3,'#2c1b1b');
+   px(15,21,7,3,'#2c1b1b');
+   px(13,24,6,3,'#2c1b1b');
+   px(11,26,6,2,'#2c1b1b');
+   // Bright zig-zag bolt, with a sharp stepped diagonal rather than a lock shape.
+   px(17,9,7,2,'#fff3a5');
+   px(16,11,6,3,'#ffe56a');
+   px(14,14,7,3,'#ffcf42');
+   px(13,17,10,2,'#ffe56a');
+   px(18,19,5,2,'#ffc83c');
+   px(16,21,5,2,'#ffe36a');
+   px(14,23,5,2,'#ffcf42');
+   px(12,25,5,2,'#ffe36a');
+   px(16,12,2,2,'#fff8cb');
  }
  if(base==='hidden'){
    px(18,8,3,13,'#f2cc74');px(13,13,13,3,'#f2cc74');px(19,11,2,6,'#fff5c0');
