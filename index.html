@@ -48,6 +48,7 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{d
 
 // Eigenständiger, lizenzfreier Chiptune direkt mit Web Audio erzeugt.
 // Kein Download, kein Tracking, keine externen Assets. Start erst nach Nutzerinteraktion.
+const IS_TEST_BUILD=location.pathname.startsWith('/deep-dig-test/');
 const AUDIO_KEY=IS_TEST_BUILD?'deepdig_test_audio_v010':'deepdig_audio_v010';
 const audioSettings={music:35,sfx:65,muted:false};
 try{const saved=JSON.parse(localStorage.getItem(AUDIO_KEY)||'null');if(saved){for(const k of ['music','sfx'])if(Number.isFinite(saved[k]))audioSettings[k]=Math.max(0,Math.min(100,saved[k]));audioSettings.muted=!!saved.muted}}catch(e){}
@@ -184,7 +185,7 @@ const WORLDS=[{name:'DIE ERSTEN MINEN',from:1,to:10,theme:'classic'},{name:'DIE 
 let selectedWorld=0;
 LABELS.push(...["Kupfermine: Die erste tiefere Schicht.","Rostrote Tunnel und kostbare Funde.","Finde den Weg durch Felsadern.","Ein guter Umweg spart Energie.","Kupfermine: Die letzte Prüfung.","Kristallhöhle: Glitzernde Versuchung.","Nicht jeder Kristall lohnt den Umweg.","Tief in den blauen Gängen.","Kostbare Schätze, knappe Energie.","Kristallhöhle: Das große Finale.","Lavakern: Meide die heißen Felder.","Wähle deinen Weg zwischen Lava und Stein.","Die Goblins bewachen den Abstieg.","Ein letzter Weg durch die Glut.","Finale: Erreiche den tiefsten Ausgang!"]);
 // RC3: production keys remain identical to v0.14. Test host keeps isolated RC1 saves.
-const IS_TEST_BUILD=location.pathname.startsWith('/deep-dig-test/');
+
 const STORE=IS_TEST_BUILD?'deepdig_rc1_v015_progress':'deepdig_v07_progress',
  OLD_STORE=IS_TEST_BUILD?'deepdig_rc1_v015_legacy_unused':'deepdig_v06_progress',
  TREASURE_STORE=IS_TEST_BUILD?'deepdig_rc1_v015_treasure':'deepdig_v014_treasure';
