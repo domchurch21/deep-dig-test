@@ -441,6 +441,9 @@ function starsFor(n,points){const [two,three]=TARGETS[n];return 1+Number(points>
 let previousBestAtStart=0,victoryRendered=false;let level=1,cells=[],visited=new Set(),x=3,y=0,energy=START,score=0,ended=false,won=false,moves=0,gameOverReason="",swingUntil=0,hitAt=-1,swingDirection=1,swingStart=0,swingTimer=null;
 const $=id=>document.getElementById(id),board=$('board'),status=$('status');
 
+const DYNAMITE_TUTORIAL_KEY=IS_TEST_BUILD?'deepdig_test_dynamite_tutorial_v1':'deepdig_dynamite_tutorial_v1';
+let dynamiteTutorialSeen=false;try{dynamiteTutorialSeen=localStorage.getItem(DYNAMITE_TUTORIAL_KEY)==='done'}catch(e){}
+function finishDynamiteTutorial(){dynamiteTutorialSeen=true;try{localStorage.setItem(DYNAMITE_TUTORIAL_KEY,'done')}catch(e){}setTutorial('')}
 const TUTORIAL_KEY=IS_TEST_BUILD?'deepdig_test_tutorial_v012':'deepdig_tutorial_v012';
 let tutorialDone=false,tutorialStep='';
 try{tutorialDone=localStorage.getItem(TUTORIAL_KEY)==='done'}catch(e){}
@@ -451,7 +454,8 @@ energy:['⚡ DEINE ENERGIE','Oben siehst du deinen Energievorrat. Erde und Schä
 symbols:['WAS BEDEUTEN DIE SYMBOLE?','Das sind die Dinge, die du in der Mine finden kannst:'],
 goal:['🎯 DEIN ZIEL','Grabe dich bis zur Leiter unten durch! Gold bringt 10 Punkte, Edelsteine 30. Mehr Punkte bedeuten mehr Sterne. Viel Spaß!'],
 lava:['🌋 NEU: LAVA','Lava kannst du nicht betreten. Suche einen sicheren Weg außen herum.'],
-monster:['👹 NEU: GOBLINS','Goblins blockieren ihre Felder. Du kannst nicht durch sie hindurchgraben.']};
+monster:['👹 NEU: GOBLINS','Goblins blockieren ihre Felder. Du kannst nicht durch sie hindurchgraben.'],
+dynamite:['🧨 DYNAMIT FREIGESCHALTET!','Du startest jeden Levelversuch mit 1 Dynamitstange. Tippe oben auf 🧨 DYNAMIT und wähle ein Feld direkt neben dir. Die Explosion räumt Erde, Felsen und Goblins in Kreuzform (bis zu 5 Felder) weg. Lava und Schätze bleiben erhalten.']};
 function setTutorial(step){
 tutorialStep=step;
 const panel=$('tutorialPanel'),title=$('tutorialTitle'),body=$('tutorialText'),legend=$('tutorialLegend');
@@ -470,10 +474,11 @@ if(tutorialStep==='welcome')setTutorial('move');
 else if(tutorialStep==='energy')setTutorial('symbols');
 else if(tutorialStep==='symbols')setTutorial('goal');
 else if(tutorialStep==='goal')finishTutorial();
+else if(tutorialStep==='dynamite')finishDynamiteTutorial();
 else if(tutorialStep==='lava'||tutorialStep==='monster')setTutorial('');
 }
 $('tutorialNext').addEventListener('click',nextTutorial);
-$('tutorialSkip').addEventListener('click',()=>{if(tutorialStep==='lava'||tutorialStep==='monster')setTutorial('');else finishTutorial()});
+$('tutorialSkip').addEventListener('click',()=>{if(tutorialStep==='dynamite')finishDynamiteTutorial();else if(tutorialStep==='lava'||tutorialStep==='monster')setTutorial('');else finishTutorial()});
 $('replayTutorial').addEventListener('click',()=>{tutorialDone=false;try{localStorage.removeItem(TUTORIAL_KEY)}catch(e){}level=1;newGame();showScreen('gameScreen')});
 function tutorialHazardSeen(kind){
 try{const k='deepdig_test_seen_'+kind+'_v012';if(localStorage.getItem(k)==='yes')return true;localStorage.setItem(k,'yes')}catch(e){}return false
@@ -673,6 +678,7 @@ function newGame(){setTutorial('');if(treasureBurstTimer){clearTimeout(treasureB
 if(level===1&&!tutorialDone)setTutorial('welcome');
 if(level===5&&!tutorialHazardSeen('lava'))setTutorial('lava');
 if(level===7&&!tutorialHazardSeen('monster'))setTutorial('monster');
+if(hasDynamite()&&!dynamiteTutorialSeen)setTutorial('dynamite');
 }
 function move(a,b){if(dynamiteAiming){detonate(a,b);return}if(!accessible(a,b))return;if(tutorialStep&&tutorialStep!=='move')return;
 const firstTutorialMove=tutorialStep==='move';const i=idx(a,b),tile=cells[i],old=visited.has(i);const digging=!old&&tile!=='exit';swingStart=performance.now();swingUntil=digging?swingStart+340:0;swingDirection=b>y?0:(a<x?-1:1);hitAt=digging?i:-1;let spent=0;if(!old){spent=cost(tile)+(i===chestPosition?2:0);energy-=spent;if(i===chestPosition){pendingChest=true;chestFlashUntil=performance.now()+850;if(!treasure.chests[String(level)]){popGold(20);showTreasureBurst('chest','✨ SCHATZTRUHE!')}}if(tile==='gold'){score+=10;if(i!==chestPosition){const claimed=treasure.claimed[String(level)]||[];if(!claimed.includes(i)){const amount=5+upgradeTier('lantern');pendingGold.set(i,amount);popGold(amount)}}}if(tile==='gem'||tile==='hidden')score+=30;if(tile==='gem')popFind('💎 +30 PUNKTE');if(tile==='hidden')popFind('✨ VERBORGENER SCHATZ! +30 PUNKTE');if(tile==='energy'){const beforeRefill=energy;energy=Math.min(START+upgradeTier('backpack')+(upgradeTier('pickaxe')===3?2:0),energy+3);popEnergy(energy-beforeRefill)}if(tile==='exit')score+=50;visited.add(i);if(i===crystalPosition&&!treasure.crystals[String(level)]){pendingCrystal=true;showTreasureBurst('relic','💎 SELTENER KRISTALL!');popFind('💎 SELTENER KRISTALL! +15 GOLD BEI SIEG')}if(i===relicPosition&&!treasure.relics[relicForLevel(level).id]){pendingRelic=relicForLevel(level);showTreasureBurst('relic','💎 '+pendingRelic.name);const pop=$('goldPop');pop.textContent='💎 RELIKT ENTDECKT!';pop.hidden=false;if(goldPopTimer)clearTimeout(goldPopTimer);goldPopTimer=setTimeout(()=>{pop.hidden=true},1200)}}x=a;y=b;moves++;if(!old&&tile!=='exit')sound(tile);if(tile==='exit'){sound('win');ended=true;won=true;const stars=starsFor(level,score);bankTreasure(stars);progress.stars[level]=Math.max(progress.stars[level]||0,stars);progress.best[level]=Math.max(progress.best[level]||0,score);progress.unlocked=Math.max(progress.unlocked,Math.min(TOTAL_LEVELS,level+1));save();drawLevels();status.textContent='🏁 Level geschafft! '+ '⭐'.repeat(stars)+' · Nächstes Level freigeschaltet.'}else if(!hasUsefulMove()){sound('lose');ended=true;gameOverReason=energy===0?'ENERGIE AUFGEBRAUCHT':'KEIN WEG MEHR';status.textContent='⚡ '+(energy===0?'Keine Energie mehr.':'Keine bezahlbare Grabmöglichkeit mehr.')+' Neuer Versuch?'}else{status.textContent=old?'Bekannter Tunnel – kostenlos.':tile==='rock'?'🪨 Stein: −'+spent+' Energie.':tile==='gem'||tile==='hidden'?'💎 Edelstein: +30 Punkte.':i===chestPosition?'📦 Schatztruhe geöffnet: −3 Energie.':tile==='gold'?'Gold: +10 Punkte.':tile==='energy'?'🧪 Energietrank: +3 Energie.':'Weiter graben!'}render();if(firstTutorialMove&&!ended)setTutorial('energy');else if(firstTutorialMove&&ended)finishTutorial();if(digging){const animate=()=>{if(performance.now()<Math.max(swingUntil,chestFlashUntil)){render();swingTimer=setTimeout(animate,55)}else{render();swingTimer=null}};swingTimer=setTimeout(animate,55)}}
