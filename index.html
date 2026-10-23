@@ -691,7 +691,6 @@ function validateMineRoutes(){
  }
  if(invalid.length)throw Error('Unlösbare Minen ohne Dynamit: '+invalid.join(', '));
 }
-validateMineRoutes();
 const LABELS=['','Erste Schritte: Finde den Ausgang.','Wähle: kurzer Weg oder mehr Schätze?','Ein ungewöhnliches Erdfeld kann etwas verbergen.','Entscheide, welche Umwege sich lohnen.','Neu: Lava blockiert den Weg.','Finde eine Route zwischen Lavafeldern.','Neu: Goblins sind feste Hindernisse.','Lava und Monster: Nicht jeder Umweg ist bezahlbar.','Achte auf teure Steine und Sackgassen.','Finale: Prüfe deine Route, bevor du gräbst.'];
 // Release candidate: normal progression, 25 levels.
 LABELS.push(...["Kupfermine: Die erste tiefere Schicht.","Rostrote Tunnel und kostbare Funde.","Finde den Weg durch Felsadern.","Ein guter Umweg spart Energie.","Kupfermine: Die letzte Prüfung.","Kristallhöhle: Glitzernde Versuchung.","Nicht jeder Kristall lohnt den Umweg.","Tief in den blauen Gängen.","Kostbare Schätze, knappe Energie.","Kristallhöhle: Das große Finale.","Lavakern: Meide die heißen Felder.","Wähle deinen Weg zwischen Lava und Stein.","Die Goblins bewachen den Abstieg.","Ein letzter Weg durch die Glut.","Finale: Erreiche den tiefsten Ausgang!"]);
@@ -712,6 +711,57 @@ Object.assign(TARGETS,{"11":[90,150],"12":[90,150],"13":[90,150],"14":[90,150],"
 Object.assign(TARGETS,{"4":[170,210],"10":[120,150],"28":[90,130],"43":[130,210],"46":[140,220],"50":[120,190],"11":[140,240],"12":[150,270],"13":[130,230],"14":[140,240],"15":[140,240],"16":[160,290],"17":[180,340],"18":[150,280],"19":[150,260],"20":[160,290]});
 Object.assign(TARGETS,{"41":[110,180],"42":[100,160],"43":[140,230],"44":[140,240],"45":[150,250],"46":[150,250],"47":[130,230],"48":[80,130],"49":[130,230],"50":[130,210]});
 Object.assign(TARGETS,{"10":[70,100],"16":[260,430]});
+
+
+// Curated loot budget for all 50 authored maps. Only ordinary loot and energy
+// are thinned; hazards, rocks, resonators, exits and hidden finds stay intact.
+const LOOT_LIMITS=[
+ {to:10,g:5,d:3,e:2},{to:20,g:6,d:4,e:3},
+ {to:35,g:7,d:5,e:3},{to:50,g:8,d:5,e:4}
+];
+function rebalanceMineLoot(){
+ for(let n=1;n<=TOTAL_LEVELS;n++){
+  const rows=MAPS[n].map(row=>row.split(''));
+  const limit=LOOT_LIMITS.find(group=>n<=group.to);
+  const pick=(type,max)=>{
+   const positions=[];
+   for(let y=1;y<H-1;y++)for(let x=0;x<W;x++)if(rows[y][x]===type)positions.push([x,y]);
+   if(positions.length<=max)return;
+   // Spread retained items over different depths and columns.
+   const keep=[],remaining=positions.slice();
+   // A gold tile away from the center is retained for optional chests.
+   if(type==='g'){
+    const far=remaining.filter(([x])=>Math.abs(x-3)>=2);
+    if(far.length){const chosen=far[Math.floor(far.length/2)];keep.push(chosen);remaining.splice(remaining.indexOf(chosen),1)}
+   }
+   while(keep.length<max&&remaining.length){
+    let best=0,bestScore=-Infinity;
+    for(let i=0;i<remaining.length;i++){
+     const [x,y]=remaining[i];
+     const separation=keep.length?Math.min(...keep.map(([a,b])=>Math.abs(a-x)+Math.abs(b-y))):Math.abs(y-H/2)+Math.abs(x-W/2);
+     const spread=separation*100+((x*17+y*31+n*13)%23);
+     if(spread>bestScore){bestScore=spread;best=i}
+    }
+    keep.push(remaining.splice(best,1)[0]);
+   }
+   for(const [x,y] of remaining)rows[y][x]='.';
+  };
+  pick('g',limit.g);pick('d',limit.d);pick('+',limit.e);
+  MAPS[n]=rows.map(row=>row.join(''));
+ }
+}
+rebalanceMineLoot();
+validateMineRoutes();
+// Point goals must reflect the reduced treasure supply. A mine with no
+// upgrades can earn 50 exit points, 10 per gold, 30 per gem/hidden tile.
+for(let n=1;n<=TOTAL_LEVELS;n++){
+ const map=MAPS[n].join('');
+ const gold=(map.match(/g/g)||[]).length;
+ const gems=(map.match(/d/g)||[]).length;
+ const hidden=(map.match(/\\?/g)||[]).length;
+ const potential=50+gold*10+(gems+hidden)*30;
+ TARGETS[n]=[Math.max(60,Math.round(potential*.40/10)*10),Math.max(90,Math.round(potential*.65/10)*10)];
+}
 
 let progress={unlocked:1,best:{},stars:{}};
 let treasure={gold:0,claimed:{},starClaims:{},relics:{},chests:{},crystals:{}};
