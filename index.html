@@ -758,7 +758,7 @@ for(let n=1;n<=TOTAL_LEVELS;n++){
  const map=MAPS[n].join('');
  const gold=(map.match(/g/g)||[]).length;
  const gems=(map.match(/d/g)||[]).length;
- const hidden=(map.match(/\\?/g)||[]).length;
+ const hidden=map.split('?').length-1;
  const potential=50+gold*10+(gems+hidden)*30;
  TARGETS[n]=[Math.max(60,Math.round(potential*.40/10)*10),Math.max(90,Math.round(potential*.65/10)*10)];
 }
