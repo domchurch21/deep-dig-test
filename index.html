@@ -530,6 +530,36 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{d
  .game-screen .board-wrap.dd-shaft06 .dd-shaft-lamp.left{left:6px}
  .game-screen .board-wrap.dd-shaft06 .dd-shaft-lamp.right{right:6px}
 }
+/* Phase 4.5b: cave strata behind Mine 06, extending into the available margins.
+   Background only: no hit targets, no changes to the 8x12 board geometry. */
+.game-screen .board-wrap.dd-shaft06 .dd-shaft-wall{
+ inset:-14px -26px -18px!important;
+ z-index:-1;
+ border-radius:12px;
+ background:
+  radial-gradient(ellipse at 4% 13%,rgba(183,128,70,.24),transparent 27%),
+  radial-gradient(ellipse at 96% 15%,rgba(170,116,64,.22),transparent 29%),
+  radial-gradient(ellipse at 5% 77%,rgba(105,79,62,.37),transparent 29%),
+  radial-gradient(ellipse at 95% 73%,rgba(108,82,63,.37),transparent 32%),
+  repeating-linear-gradient(165deg,transparent 0 18px,rgba(145,105,71,.15) 19px 21px,transparent 22px 52px),
+  linear-gradient(90deg,#24212a,#3a2c27 9%,#241f23 21%,#29242a 50%,#241f23 79%,#3a2c27 91%,#24212a);
+ box-shadow:0 0 0 5px rgba(35,30,31,.55),0 0 25px 10px rgba(20,17,21,.6);
+}
+.game-screen .board-wrap.dd-shaft06 .dd-shaft-wall::before,
+.game-screen .board-wrap.dd-shaft06 .dd-shaft-wall::after{
+ content:"";position:absolute;top:3%;bottom:3%;width:19px;pointer-events:none;
+ background:
+  linear-gradient(140deg,transparent 0 20%,rgba(175,137,94,.28) 21% 24%,transparent 25% 50%,rgba(123,103,83,.25) 51% 54%,transparent 55%),
+  repeating-linear-gradient(180deg,#4b3b32 0 23px,#302a2c 23px 42px,#554335 42px 58px,#262329 58px 81px);
+ opacity:.9;
+}
+.game-screen .board-wrap.dd-shaft06 .dd-shaft-wall::before{left:0;clip-path:polygon(45% 0,100% 5%,70% 19%,100% 33%,65% 49%,100% 63%,55% 78%,90% 91%,40% 100%,0 100%,0 0)}
+.game-screen .board-wrap.dd-shaft06 .dd-shaft-wall::after{right:0;clip-path:polygon(55% 0,100% 0,100% 100%,20% 100%,0 88%,45% 73%,0 59%,35% 45%,0 28%,40% 15%,0 5%)}
+@media(max-width:420px){
+ .game-screen .board-wrap.dd-shaft06 .dd-shaft-wall{inset:-11px -12px -14px!important}
+ .game-screen .board-wrap.dd-shaft06 .dd-shaft-wall::before,
+ .game-screen .board-wrap.dd-shaft06 .dd-shaft-wall::after{width:9px}
+}
 /* Phase 4.2 – compact HUD dynamite control; no extra vertical row. */
 .game-screen .hud{display:flex;align-items:center;justify-content:space-between;gap:clamp(3px,1.3vw,9px);white-space:nowrap}
 .game-screen .hud>span{flex:0 1 auto;min-width:0}
