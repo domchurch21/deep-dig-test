@@ -1661,11 +1661,14 @@ const DD_MINE06_ROCK=(()=>{
  }
  return variants;
 })();
+/* Phase 4.5d: external concept rock PNGs, Mine 06 only.
+   Note: repository files are named fels_01.png etc (not *_clean.png). */
+const DD_MINE06_ROCK_PNG=[1,2,3].map(n=>'url("assets/fels_0'+n+'.png")');
 function ddMine06RockVariant(col,row){
  let n=(Math.imul(col+23,73856093)^Math.imul(row+41,19349663))>>>0;
  n=Math.imul(n^(n>>>15),2246822519)>>>0;
  const p=((n^(n>>>13))>>>0)%100;
- return DD_MINE06_ROCK[p<60?0:p<85?1:2];
+ return DD_MINE06_ROCK_PNG[p<60?0:p<85?1:2];
 }
 /* Phase 4.3: cohesive, higher-detail 64px collectible art for Mine 06 only. */
 const DD_MINE06_COLLECTIBLES=(()=>{
