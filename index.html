@@ -1347,35 +1347,59 @@ function paintRareCrystal(){
  px(12,17,2,3,'#ffe4ff');px(16,22,2,3,'#f5a4ff');
  return canvas;
 }
-/* Grafik-Upgrade Phase 4.1: isolated, deterministic earth preview in Mine 06 only. */
+/* Phase 4.1b: Mine 06 only. Four distinct soil families with calm, clustered distribution. */
 const DD_MINE06_EARTH = (() => {
  const variants=[];
- const palettes=[
-  ['#704027','#a5673d','#c0804a','#4b3029'],
-  ['#70412a','#a56b40','#bd7d4a','#4b332b'],
-  ['#754329','#ae7042','#c78a51','#503328'],
-  ['#6b3f2a','#9e653e','#b97948','#47332c']
- ];
- for(let v=0;v<4;v++){
-  const [dark,mid,light,shade]=palettes[v];let shapes='';
-  let seed=(((v+1)*987654321)>>>0);
+ const make=(kind,variation)=>{
+  let seed=(Math.imul(kind+3,73856093)^Math.imul(variation+5,19349663))>>>0;
   const rnd=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
-  for(let j=0;j<34;j++){
-   const x=Math.floor(rnd()*16)*4,y=Math.floor(rnd()*16)*4,w=4+Math.floor(rnd()*3)*4,h=4+Math.floor(rnd()*2)*4;
-   shapes+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+(j%4===0?dark:j%3===0?light:mid)+'" opacity="'+(j%4===0?'.75':'.7')+'"/>';
+  const rect=(x,y,w,h,fill)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+fill+'"/>';
+  let art=rect(0,0,64,64,kind===3?'#69472f':'#855434');
+  // Broad, low-contrast soil strata; avoid noisy, uniformly speckled tiles.
+  for(let i=0;i<9;i++){
+   const x=Math.floor(rnd()*14)*4,y=Math.floor(rnd()*15)*4;
+   art+=rect(x,y,8+Math.floor(rnd()*4)*4,4+Math.floor(rnd()*2)*4,i%3===0?'#9b633c':'#77492f');
   }
-  for(let j=0;j<6;j++){
-   const x=4+Math.floor(rnd()*13)*4,y=4+Math.floor(rnd()*13)*4;
-   shapes+='<path d="M'+x+' '+(y+8)+'v-4h4v-4h8v4h4v8h-4v4h-8v-4h-4z" fill="'+shade+'"/><path d="M'+(x+4)+' '+y+'h8v4h-8z" fill="#b5a090"/><path d="M'+(x+4)+' '+(y+4)+'h8v4h-8z" fill="#786d68"/>';
+  const pebble=(x,y,size)=>{
+   art+=rect(x,y+4,size,size-4,'#503c34')+rect(x+4,y,size-4,4,'#b5a08a')+rect(x+4,y+4,size-4,size-8,'#85776e');
+  };
+  if(kind===0){ // calm earth, at most a few tiny pebbles
+   for(let i=0;i<2+variation%2;i++)pebble(4+Math.floor(rnd()*12)*4,8+Math.floor(rnd()*11)*4,8);
+  }else if(kind===1){ // conspicuous rock-rich soil
+   for(let i=0;i<5+variation%2;i++)pebble(4+Math.floor(rnd()*11)*4,8+Math.floor(rnd()*10)*4,12);
+   art+=rect(8,44,20,4,'#634438')+rect(12,40,12,4,'#a99580');
+  }else if(kind===2){ // branching roots, no pebbles
+   const x=variation%2?44:20;
+   art+='<path d="M'+x+' 0v16h-4v12h-8v12h-8v16h-4v-20h8v-12h8v-12h4V0z" fill="#493023"/>';
+   art+='<path d="M'+(x-4)+' 0v16h-4v12h-8v12h-8v16h-4v-20h8v-12h8v-12h4V0z" fill="#b88a55"/>';
+   art+='<path d="M'+(x-8)+' 24h12v8h8v8h8v12h-4v-8h-8v-8h-12z" fill="#9e7045"/>';
+  }else{ // moss patches, muted green, only one pebble
+   pebble(40,36,8);
+   for(let i=0;i<4;i++){const x=4+Math.floor(rnd()*12)*4,y=4+Math.floor(rnd()*11)*4;art+=rect(x,y,8+Math.floor(rnd()*3)*4,4,'#4e6b3c')+rect(x+4,y,4,4,'#78924b')}
   }
-  if(v===2)shapes+='<path d="M0 12h12v4h8v8h8v8h-4v-4h-8v-8H8v-4H0z" fill="#60442f"/><path d="M0 8h12v4h8v8h8v8h-4v-4h-8v-8H8v-4H0z" fill="#b58a55"/>';
-  if(v===3)for(let j=0;j<5;j++){const x=8+j*12,y=4+(j%3)*20;shapes+='<rect x="'+x+'" y="'+y+'" width="4" height="4" fill="#557443"/>'}
-  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges"><rect width="64" height="64" fill="'+mid+'"/><rect y="58" width="64" height="6" fill="'+dark+'"/>'+shapes+'<path d="M0 0h64v4H0z" fill="'+light+'" opacity=".55"/><path d="M60 0h4v64h-4z" fill="'+dark+'" opacity=".65"/></svg>';
-  variants.push('url("data:image/svg+xml,'+encodeURIComponent(svg)+'")');
- }
+  art+=rect(0,60,64,4,'#65412d')+rect(0,0,64,4,'#a66e44');
+  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges">'+art+'</svg>';
+  return 'url("data:image/svg+xml,'+encodeURIComponent(svg)+'")';
+ };
+ // 3 calm variants, 2 rocky, 2 roots, 1 moss.
+ for(const [kind,count] of [[0,3],[1,2],[2,2],[3,1]])for(let i=0;i<count;i++)variants.push(make(kind,i));
  return variants;
 })();
-function ddMine06EarthVariant(col,row){return DD_MINE06_EARTH[((col*17+row*31+col*row*7)>>>0)%DD_MINE06_EARTH.length];}
+function ddMine06EarthVariant(col,row){
+ // Low-frequency coordinate noise creates contiguous patches, not a checkerboard.
+ const hash=(x,y)=>{let n=(Math.imul(x+11,374761393)+Math.imul(y+19,668265263))>>>0;n=Math.imul(n^(n>>>13),1274126177)>>>0;return ((n^(n>>>16))>>>0)/4294967296};
+ const gx=Math.floor(col/3),gy=Math.floor(row/3);
+ const fx=(col%3)/3,fy=(row%3)/3;
+ const smooth=t=>t*t*(3-2*t);
+ const a=hash(gx,gy)*(1-smooth(fx))+hash(gx+1,gy)*smooth(fx);
+ const b=hash(gx,gy+1)*(1-smooth(fx))+hash(gx+1,gy+1)*smooth(fx);
+ const value=a*(1-smooth(fy))+b*smooth(fy);
+ let first=value<.55?0:value<.75?3:value<.9?5:7;
+ if(first===0)first=(col+row*3)%3;
+ else if(first===3)first+=((col+row)%2);
+ else if(first===5)first+=((col+row)%2);
+ return DD_MINE06_EARTH[first];
+}
 function render(){updateDynamiteButton();board.replaceChildren();for(let b=0;b<H;b++)for(let a=0;a<W;a++){let i=idx(a,b),t=cells[i],isPlayer=a===x&&b===y,seen=visited.has(i),el=document.createElement('button');el.type='button';el.className='cell '+(isPlayer?'player':seen?'empty':t)+(isPlayer&&performance.now()<swingUntil?' swing':'')+(dynamiteAiming&&dynamiteTarget(a,b)?' reachable':'')+(!dynamiteAiming&&accessible(a,b)?' reachable':'');const swinging=isPlayer&&performance.now()<swingUntil;const phase=swinging?Math.min(3,Math.floor((performance.now()-swingStart)/85)):0;if(level===6&&t==='dirt'&&!seen&&!isPlayer){el.classList.add('dd-earth-preview');el.style.backgroundImage=ddMine06EarthVariant(a,b);el.style.backgroundSize='100% 100%';}else{el.appendChild(paintSprite(t,isPlayer,seen,phase,swinging,swingDirection));}if(t==='resonator'&&!seen&&!isPlayer){el.classList.add('dd-resonator-pulse')}if(crystalBreaks.has(i)){const elapsed=performance.now()-crystalBreaks.get(i);if(elapsed>800){crystalBreaks.delete(i)}else if(elapsed>=0){const fx=document.createElement('span');fx.className='dd-crystal-break';fx.textContent='✦';fx.style.animationDelay='0ms';el.append(fx)}}if(isPlayer&&hitAt===i&&swinging&&performance.now()-swingStart<340){const dust=document.createElement('span');dust.className='dig-dust';dust.setAttribute('aria-hidden','true');const elapsed=performance.now()-swingStart;dust.style.setProperty('--dust-elapsed','-'+elapsed+'ms');el.append(dust)}if(i===chestPosition&&seen&&performance.now()<chestFlashUntil){const flash=document.createElement('span');flash.className='chest-opening';flash.innerHTML='<span class="chest-spark">✨<span class="gold-coin" aria-hidden="true"></span>✨</span>';el.append(flash)}if(i===chestPosition&&!seen){const chest=document.createElement('span');chest.className='chest-mark';chest.append(paintPixelChest());chest.classList.add('wooden-chest');if(treasure.chests[String(level)])chest.classList.add('claimed');el.append(chest)}if(i===relicPosition&&!treasure.relics[relicForLevel(level).id]&&!seen){const mark=document.createElement('span');mark.className='relic-mark';mark.textContent='✨';el.append(mark)}if(i===crystalPosition&&!seen){const mark=document.createElement('span');mark.className='rare-crystal-mark'+(treasure.crystals[String(level)]?' claimed':'');mark.append(paintRareCrystal());mark.setAttribute('aria-hidden','true');el.append(mark)}el.setAttribute('aria-label',isPlayer?'Bergarbeiter':t+' '+(a+1)+','+(b+1)+(i===crystalPosition?(treasure.crystals[String(level)]?' bereits gesammelter seltener Kristall':' seltener Kristall'):''));el.disabled=dynamiteAiming?!dynamiteTarget(a,b):!accessible(a,b);el.addEventListener('click',()=>move(a,b));board.append(el)}
 $('energy').textContent='⚡ '+energy+'/'+MAX;$('score').textContent='★ '+score;$('best').textContent='🏆 '+(progress.best[level]||0);
 $('summary').hidden=!ended;$('next').disabled=!won||level>=TOTAL_LEVELS;$('overlayNext').hidden=!won||level>=TOTAL_LEVELS;
