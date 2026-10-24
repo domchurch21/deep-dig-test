@@ -1625,6 +1625,13 @@ const DD_MINE06_EARTH = (() => {
  for(const [kind,count] of [[0,3],[1,2],[2,2],[3,1]])for(let i=0;i<count;i++)variants.push(make(kind,i));
  return variants;
 })();
+/* Phase 4.5d: actual PNG assets uploaded to assets/; only Mine 06 uses these.
+   The existing 8-family distribution remains unchanged. */
+const DD_MINE06_EARTH_PNG=[
+ 'erde_ruhig_01.png','erde_ruhig_02.png','erde_ruhig_03.png',
+ 'erde_steinig_01.png','erde_steinig_02.png',
+ 'erde_wurzeln_01.png','erde_wurzeln_02.png','erde_ruhig_04.png'
+].map(name=>'url("assets/'+name+'")');
 function ddMine06EarthVariant(col,row){
  // Low-frequency coordinate noise creates contiguous patches, not a checkerboard.
  const hash=(x,y)=>{let n=(Math.imul(x+11,374761393)+Math.imul(y+19,668265263))>>>0;n=Math.imul(n^(n>>>13),1274126177)>>>0;return ((n^(n>>>16))>>>0)/4294967296};
@@ -1638,7 +1645,7 @@ function ddMine06EarthVariant(col,row){
  if(first===0)first=(col+row*3)%3;
  else if(first===3)first+=((col+row)%2);
  else if(first===5)first+=((col+row)%2);
- return DD_MINE06_EARTH[first];
+ return DD_MINE06_EARTH_PNG[first];
 }
 /* Phase 4.2: detailed rock silhouettes for Mine 06, 64x64, deterministic 60/25/15. */
 const DD_MINE06_ROCK=(()=>{
