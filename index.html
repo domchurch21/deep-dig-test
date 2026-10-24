@@ -501,22 +501,20 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{d
  position:absolute;inset:0;z-index:3;pointer-events:none;
 }
 .game-screen .board-wrap.dd-shaft06 .dd-shaft-lamp{
- position:absolute;top:-23px;width:19px;height:24px;
- background:
-  linear-gradient(90deg,transparent 0 5px,#49301e 5px 14px,transparent 14px),
-  linear-gradient(#f8da76,#e7a43d);
- background-size:100% 100%,11px 13px;
- background-position:center,center 7px;
- background-repeat:no-repeat;
- filter:drop-shadow(0 0 5px rgba(255,172,61,.65));
+ position:absolute;top:-30px;width:24px;height:32px;
+ background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2232%22%20viewBox%3D%220%200%2024%2032%22%20shape-rendering%3D%22crispEdges%22%3E%3Cpath%20fill%3D%22%23302018%22%20d%3D%22M10%200h4v4h-4zM7%204h10v3H7zM4%208h16v3H4zM3%2025h18v4H3z%22%2F%3E%3Cpath%20fill%3D%22%23a77339%22%20d%3D%22M8%205h8v2H8zM5%209h14v2H5zM4%2025h16v3H4z%22%2F%3E%3Cpath%20fill%3D%22%23d8a45b%22%20d%3D%22M7%2011h10v14H7z%22%2F%3E%3Cpath%20fill%3D%22%237c4727%22%20d%3D%22M4%2011h4v14H4zM16%2011h4v14h-4z%22%2F%3E%3Cpath%20fill%3D%22%23f5c45b%22%20d%3D%22M9%2012h6v12H9z%22%2F%3E%3Cpath%20fill%3D%22%23fff3b2%22%20d%3D%22M10%2013h4v8h-4z%22%2F%3E%3Cpath%20fill%3D%22%23f9dc7c%22%20d%3D%22M11%2010h2v13h-2z%22%2F%3E%3Cpath%20fill%3D%22%23422b21%22%20d%3D%22M4%2011h3v14H4zM17%2011h3v14h-3zM10%2025h4v3h-4z%22%2F%3E%3Cpath%20fill%3D%22%23e0b16b%22%20d%3D%22M6%2028h12v2H6z%22%2F%3E%3C%2Fsvg%3E");
+ background-size:100% 100%;background-repeat:no-repeat;
+ image-rendering:pixelated;
+ filter:drop-shadow(0 0 4px rgba(255,175,58,.65));
 }
 .game-screen .board-wrap.dd-shaft06 .dd-shaft-lamp::before{
- content:"";position:absolute;left:5px;right:5px;top:1px;height:5px;
- background:#7a512b;border-top:2px solid #c79855;box-shadow:0 16px #53351e;
+ content:"";position:absolute;inset:-6px -13px -17px;
+ background:radial-gradient(ellipse at 50% 48%,rgba(255,197,95,.25) 0%,rgba(255,155,48,.12) 36%,transparent 73%);
+ z-index:-1;pointer-events:none;
 }
 .game-screen .board-wrap.dd-shaft06 .dd-shaft-lamp::after{
- content:"";position:absolute;left:-17px;top:0;width:54px;height:58px;
- background:radial-gradient(ellipse at 50% 10%,rgba(255,192,81,.23),rgba(255,174,58,.08) 43%,transparent 74%);
+ content:"";position:absolute;left:9px;top:10px;width:6px;height:11px;
+ background:rgba(255,242,179,.24);box-shadow:0 0 9px 4px rgba(255,184,64,.24);
  pointer-events:none;
 }
 .game-screen .board-wrap.dd-shaft06 .dd-shaft-lamp.left{left:10px}
