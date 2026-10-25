@@ -1697,7 +1697,7 @@ const DD_MINE06_ROCK=(()=>{
 })();
 /* Phase 4.5d: external concept rock PNGs, Mine 06 only.
    Note: repository files are named fels_01.png etc (not *_clean.png). */
-const DD_MINE06_ROCK_PNG=[1,2,3].map(n=>'url("assets/fels_0'+n+'.png")');
+const DD_MINE06_ROCK_PNG=[1,2,3].map(n=>'url("assets/fels_0'+n+'.png?v=20261025-detail2")');
 function ddMine06RockVariant(col,row){
  let n=(Math.imul(col+23,73856093)^Math.imul(row+41,19349663))>>>0;
  n=Math.imul(n^(n>>>15),2246822519)>>>0;
