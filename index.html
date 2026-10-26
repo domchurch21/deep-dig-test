@@ -459,8 +459,8 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{d
 #campTreasureModal .camp-relic.found[data-relic-id="10"]{background-size:63% auto!important;background-position:55% 0%!important}
 /* Phase 4.1: earth artwork only; all other mines and sprites unchanged. */
 .game-screen .cell.dd-earth-preview{background-repeat:no-repeat;background-position:center;image-rendering:pixelated;}
-/* Mine 06 rock backing: CSS background color shows through transparent rock PNG. */
-.game-screen .board-wrap.dd-shaft06 .cell.rock.dd-earth-preview{background-color:#765037!important}
+/* All mines: brown earth backing behind transparent rock PNGs. */
+.game-screen .cell.rock.dd-earth-preview{background-color:#765037!important}
 /* Phase 4.4: Mine 06 only – shaft frame. Decorative layers never receive touch events. */
 .game-screen .board-wrap.dd-shaft06{isolation:isolate}
 .game-screen .board-wrap.dd-shaft06 .board{
@@ -1695,7 +1695,7 @@ const DD_MINE06_ROCK=(()=>{
  }
  return variants;
 })();
-/* Phase 4.5d: external concept rock PNGs, Mine 06 only.
+/* Phase 4.5d: shared rock PNGs for all levels.
    Note: repository files are named fels_01.png etc (not *_clean.png). */
 const DD_MINE06_ROCK_PNG=[1,2,3].map(n=>'url("assets/fels_0'+n+'.png?v=20261025-detail2")');
 function ddMine06RockVariant(col,row){
