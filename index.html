@@ -1052,16 +1052,16 @@ const CRYSTAL_POSITIONS={6:[3,7],8:[3,5],11:[5,5],13:[5,3],15:[7,4],17:[5,3],19:
 function crystalForLevel(n){const pos=CRYSTAL_POSITIONS[n];return pos?(pos[1]-1)*W+(pos[0]-1):-1}
 try{const saved=JSON.parse(localStorage.getItem(TREASURE_STORE)||'null');if(saved&&typeof saved==='object'){treasure.gold=Math.max(0,Number(saved.gold)||0);treasure.claimed=saved.claimed&&typeof saved.claimed==='object'?saved.claimed:{};treasure.starClaims=saved.starClaims&&typeof saved.starClaims==='object'?saved.starClaims:{};treasure.relics=saved.relics&&typeof saved.relics==='object'?saved.relics:{};treasure.chests=saved.chests&&typeof saved.chests==='object'?saved.chests:{};treasure.crystals=saved.crystals&&typeof saved.crystals==='object'?saved.crystals:{}}}catch(e){}
 const RELICS=[
-{id:1,level:2,name:'Münze des ersten Königs',icon:'🪙',description:'Eine uralte Münze aus den ersten Minenschächten.'},
-{id:2,level:5,name:'Schlüssel des Vorarbeiters',icon:'🗝️',description:'Ein alter Schlüssel zu längst verschlossenen Stollen.'},
-{id:3,level:9,name:'Flüsterkristall',icon:'💎',description:'Ein Kristall, in dem leise Stimmen aus der Tiefe widerhallen.'},
-{id:4,level:12,name:'Vergessener Kompass',icon:'🧭',description:'Seine Nadel weist auf Wege, die längst verschüttet sind.'},
-{id:5,level:15,name:'Versteinertes Urwesen',icon:'🔱',description:'Das Zeichen einer verschwundenen Bergarbeitergilde.'},
-{id:6,level:17,name:'Kelch der Tiefe',icon:'💠',description:'Ein Kristall mit geheimnisvollem Licht.'},
-{id:7,level:20,name:'Moosamulett',icon:'🌙',description:'Ein Splitter, der selbst im Dunkeln schimmert.'},
-{id:8,level:22,name:'Zerbrochene Krone',icon:'🔴',description:'Eine Perle, die nie vollständig erkaltet.'},
-{id:9,level:24,name:'Herz der Mine',icon:'🪶',description:'Eine seltene Feder aus der Tiefe des Lavakerns.'},
-{id:10,level:25,name:'Erste Spitzhacke',icon:'💎',description:'Der legendäre Schatz am tiefsten Punkt.'}
+{id:1,level:4,name:'Münze des ersten Königs',icon:'🪙',description:'Eine uralte Münze aus den ersten Minenschächten.'},
+{id:2,level:9,name:'Schlüssel des Vorarbeiters',icon:'🗝️',description:'Ein alter Schlüssel zu längst verschlossenen Stollen.'},
+{id:3,level:14,name:'Flüsterkristall',icon:'💎',description:'Ein Kristall, in dem leise Stimmen aus der Tiefe widerhallen.'},
+{id:4,level:19,name:'Vergessener Kompass',icon:'🧭',description:'Seine Nadel weist auf Wege, die längst verschüttet sind.'},
+{id:5,level:24,name:'Versteinertes Urwesen',icon:'🔱',description:'Das Zeichen einer verschwundenen Bergarbeitergilde.'},
+{id:6,level:29,name:'Kelch der Tiefe',icon:'💠',description:'Ein Kristall mit geheimnisvollem Licht.'},
+{id:7,level:34,name:'Moosamulett',icon:'🌙',description:'Ein Splitter, der selbst im Dunkeln schimmert.'},
+{id:8,level:39,name:'Zerbrochene Krone',icon:'🔴',description:'Eine Perle, die nie vollständig erkaltet.'},
+{id:9,level:44,name:'Herz der Mine',icon:'🪶',description:'Eine seltene Feder aus der Tiefe des Lavakerns.'},
+{id:10,level:49,name:'Erste Spitzhacke',icon:'💎',description:'Der legendäre Schatz am tiefsten Punkt.'}
 ];
 
 /* Relic artwork: ten uploaded 64x64 PNG tiles, keyed by relic ID. */
