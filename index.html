@@ -1450,7 +1450,7 @@ const positions=WORLD_LEVEL_STOPS[mapWorld];
  }else if(levelImg.complete&&levelImg.naturalWidth>0){
   levelFrame.classList.add('dd-image-ready');
  }
- drawLevelArt(mapWorld);const visibleLevel=Math.min(world.to,Math.max(world.from,Math.min(progress.unlocked,TOTAL_LEVELS)));const minerPoint=positions[visibleLevel-world.from];
+ if($('levelArt').dataset.renderedWorld!==String(mapWorld)){drawLevelArt(mapWorld);$('levelArt').dataset.renderedWorld=String(mapWorld)}const visibleLevel=Math.min(world.to,Math.max(world.from,Math.min(progress.unlocked,TOTAL_LEVELS)));const minerPoint=positions[visibleLevel-world.from];
  // Keep the miner on-screen and to the side of the station instead of covering its number.
  const minerOffset=minerPoint[0]<19?7:-6;
  // Use safe landing spots in the newly illustrated biomes at their first level.
@@ -1462,7 +1462,21 @@ const positions=WORLD_LEVEL_STOPS[mapWorld];
  $('levelMiner').style.top=minerY+'%';$('levelMiner').hidden=!worldAvailable(world);const trail=$('levelTrail').querySelector('svg path');trail.setAttribute('d','M '+positions.map(p=>p.join(' ')).join(' L '));
  for(let n=world.from;n<=world.to;n++){const i=n-world.from,p=positions[i],b=document.createElement('button');b.type='button';b.disabled=(!IS_TEST_BUILD&&n>progress.unlocked)||n>TOTAL_LEVELS||!MAPS[n];b.classList.toggle('active',n===level);b.style.left=p[0]+'%';b.style.top=p[1]+'%';b.textContent=String(n).padStart(2,'0');let small=document.createElement('small');small.className='dd-plaque-stars';small.setAttribute('aria-label',b.disabled?'Gesperrt':(progress.stars[n]||0)+' von 3 Sternen');small.textContent=b.disabled?'🔒':'★'.repeat(progress.stars[n]||0)+'☆'.repeat(3-(progress.stars[n]||0));b.append(small);b.addEventListener('click',()=>{level=n;newGame();showScreen('gameScreen')});root.append(b)}
 }
-let mapTarget=0;drawMapArt();setMinerPosition(0);
+let mapTarget=0;setMinerPosition(0);
+// The illustrated map is the primary image. Generate the canvas fallback only
+// after the first paint, and only if the image is unavailable.
+const ddMapImage=document.querySelector('#worldMap .dd-map-image');
+let ddMapFallbackDrawn=false;
+function ddDrawMapFallback(){
+ if(ddMapFallbackDrawn||ddMapImage?.complete&&ddMapImage.naturalWidth>0)return;
+ ddMapFallbackDrawn=true;drawMapArt();
+}
+if(ddMapImage){
+ ddMapImage.addEventListener('error',ddDrawMapFallback);
+ if(ddMapImage.complete&&!ddMapImage.naturalWidth){
+  (window.requestIdleCallback||((fn)=>setTimeout(fn,120)))(ddDrawMapFallback);
+ }
+}else (window.requestIdleCallback||((fn)=>setTimeout(fn,120)))(ddDrawMapFallback);
 $('mapSkip').addEventListener('click',()=>{if(!mapTravelling)return;const target=mapTarget;stopMapTravel();setMinerPosition(target);enterWorld(target)});
 $('mapWorldBack').addEventListener('click',()=>{mapMode='world';drawLevels()});
 let dynamiteRemaining=0,dynamiteAiming=false;
