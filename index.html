@@ -735,6 +735,10 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{d
 #levelsScreen.dd-immersive .dd-level-nodes button .dd-plaque-stars{display:block!important;white-space:nowrap!important;letter-spacing:-1.4px!important;font-family:Arial,sans-serif!important;font-size:12px!important;font-weight:900!important;line-height:12px!important;margin:1px 0 0!important;color:#ffdc70!important;text-shadow:0 1px 1px #24140e!important;transform:none!important;max-width:100%!important}
 #levelsScreen.dd-immersive .dd-level-nodes button:disabled .dd-plaque-stars{letter-spacing:0!important;font-size:12px!important;color:#d4c6a8!important}
 @media(max-width:390px){#levelsScreen.dd-immersive .dd-level-nodes button .dd-plaque-stars{font-size:11px!important;letter-spacing:-1.3px!important}}
+
+/* Image-only world transitions: never expose legacy canvas artwork while PNGs load. */
+#levelsScreen.dd-immersive #levelArt{display:none!important}
+#levelsScreen.dd-immersive .dd-level-trail:not(.dd-image-ready){background:#151b29!important}
 </style></head><body><main>
 <section id="homeScreen" class="screen active" aria-label="Startmenü">
 <div class="dd-image-home" id="imageHome">
@@ -1450,7 +1454,7 @@ const positions=WORLD_LEVEL_STOPS[mapWorld];
  }else if(levelImg.complete&&levelImg.naturalWidth>0){
   levelFrame.classList.add('dd-image-ready');
  }
- if($('levelArt').dataset.renderedWorld!==String(mapWorld)){drawLevelArt(mapWorld);$('levelArt').dataset.renderedWorld=String(mapWorld)}const visibleLevel=Math.min(world.to,Math.max(world.from,Math.min(progress.unlocked,TOTAL_LEVELS)));const minerPoint=positions[visibleLevel-world.from];
+ // Legacy canvas art is retained as code only; image-backed worlds never render it.const visibleLevel=Math.min(world.to,Math.max(world.from,Math.min(progress.unlocked,TOTAL_LEVELS)));const minerPoint=positions[visibleLevel-world.from];
  // Keep the miner on-screen and to the side of the station instead of covering its number.
  const minerOffset=minerPoint[0]<19?7:-6;
  // Use safe landing spots in the newly illustrated biomes at their first level.
