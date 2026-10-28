@@ -1036,6 +1036,19 @@ rebalanceMineLoot();
 // Resonance mechanic is introduced in later mines, not Mine 06.
 // Convert the two orphan triggers and single wall to ordinary dirt.
 MAPS[6]=MAPS[6].map(row=>row.replace(/[Cc]/g,'.'));
+// Fix disconnected resonance chains: move the first wall directly below its trigger.
+// Keep the same tile counts and leave the rest of each map unchanged.
+for(const n of [42,44,48,50]){
+ const rows=MAPS[n].map(row=>row.split(''));
+ const trigger=rows.flatMap((row,y)=>row.flatMap((tile,x)=>tile==='C'?[[x,y]]:[]))[0];
+ const [tx,ty]=trigger;
+ const wall=rows.flatMap((row,y)=>row.flatMap((tile,x)=>tile==='c'?[[x,y]]:[]))[0];
+ if(!wall||ty+1>=H||rows[ty+1][tx]!=='#')throw Error('Unexpected resonance map layout in mine '+n);
+ rows[wall[1]][wall[0]]='#';
+ rows[ty+1][tx]='c';
+ MAPS[n]=rows.map(row=>row.join(''));
+}
+
 validateMineRoutes();
 // Remove the redundant buried-treasure tile from every authored level.
 // Preserve the original star thresholds; replace only as many hidden finds
