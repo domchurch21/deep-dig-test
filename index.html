@@ -1034,16 +1034,30 @@ function rebalanceMineLoot(){
 }
 rebalanceMineLoot();
 validateMineRoutes();
-// Point goals must reflect the reduced treasure supply. A mine with no
-// upgrades can earn 50 exit points, 10 per gold, 30 per gem/hidden tile.
+// Remove the redundant buried-treasure tile from every authored level.
+// Preserve the original star thresholds; replace only as many hidden finds
+// with ordinary gems as needed to keep the former score potential sufficient.
+const DD_REMOVED_HIDDEN_REPORT=[];
 for(let n=1;n<=TOTAL_LEVELS;n++){
- const map=MAPS[n].join('');
- const gold=(map.match(/g/g)||[]).length;
- const gems=(map.match(/d/g)||[]).length;
- const hidden=map.split('?').length-1;
- const potential=50+gold*10+(gems+hidden)*30;
- TARGETS[n]=[Math.max(60,Math.round(potential*.40/10)*10),Math.max(90,Math.round(potential*.65/10)*10)];
+ const rows=MAPS[n].map(r=>r.split(''));
+ const hiddenPositions=[];
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(rows[y][x]==='?')hiddenPositions.push([x,y]);
+ const original=rows.map(r=>r.join('')).join('');
+ const gold=(original.match(/g/g)||[]).length;
+ const gems=(original.match(/d/g)||[]).length;
+ const oldPotential=50+gold*10+(gems+hiddenPositions.length)*30;
+ const oldThresholds=[Math.max(60,Math.round(oldPotential*.40/10)*10),Math.max(90,Math.round(oldPotential*.65/10)*10)];
+ // Keep a 30-point cushion above three stars for routing flexibility.
+ const needed=Math.min(hiddenPositions.length,Math.max(0,Math.ceil((oldThresholds[1]+30-(50+gold*10+gems*30))/30)));
+ // Favor discoveries nearer the central route rather than isolated map edges.
+ hiddenPositions.sort((a,b)=>Math.abs(a[0]-3)-Math.abs(b[0]-3)||Math.abs(a[1]-6)-Math.abs(b[1]-6));
+ hiddenPositions.forEach(([x,y],i)=>{rows[y][x]=i<needed?'d':'.'});
+ MAPS[n]=rows.map(r=>r.join(''));
+ DD_REMOVED_HIDDEN_REPORT.push({level:n,removed:hiddenPositions.length,replaced:needed,stars:oldThresholds});
 }
+validateMineRoutes();
+// Preserve original thresholds calculated from the former point budgets.
+for(const row of DD_REMOVED_HIDDEN_REPORT)TARGETS[row.level]=row.stars;
 
 let progress={unlocked:1,best:{},stars:{}};
 let treasure={gold:0,claimed:{},starClaims:{},relics:{},chests:{},crystals:{}};
