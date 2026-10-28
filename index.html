@@ -739,6 +739,13 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{d
 /* Image-only world transitions: never expose legacy canvas artwork while PNGs load. */
 #levelsScreen.dd-immersive #levelArt{display:none!important}
 #levelsScreen.dd-immersive .dd-level-trail:not(.dd-image-ready){background:#151b29!important}
+
+/* Keep the interactive level markers above the full-size world illustration. */
+#levelsScreen.dd-immersive .dd-level-trail{position:relative!important;isolation:isolate}
+#levelsScreen.dd-immersive .dd-level-trail .dd-level-image{z-index:1!important}
+#levelsScreen.dd-immersive .dd-level-trail .dd-level-nodes{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:20!important;pointer-events:none!important}
+#levelsScreen.dd-immersive .dd-level-trail .dd-level-nodes button{pointer-events:auto!important;z-index:21!important}
+#levelsScreen.dd-immersive .dd-level-trail .dd-level-miner{z-index:22!important}
 </style></head><body><main>
 <section id="homeScreen" class="screen active" aria-label="Startmenü">
 <div class="dd-image-home" id="imageHome">
