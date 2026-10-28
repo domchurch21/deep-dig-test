@@ -963,7 +963,7 @@ function validateMineRoutes(){
    const col=current%W,row=Math.floor(current/W);
    for(const [nx,ny] of [[col-1,row],[col+1,row],[col,row+1]]){
     if(nx<0||nx>=W||ny>=H)continue;
-    const tile=rows[ny][nx];if(tile==='L'||tile==='M'||tile==='c')continue;
+    const tile=rows[ny][nx];if(tile==='L'||tile==='M'||(tile==='c'&&n<31))continue;
     const next=ny*W+nx;
     distances[next]=Math.min(distances[next],distances[current]+(tile==='#'?3:1));
    }
