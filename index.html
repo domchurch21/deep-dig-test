@@ -1461,7 +1461,8 @@ const positions=WORLD_LEVEL_STOPS[mapWorld];
  }else if(levelImg.complete&&levelImg.naturalWidth>0){
   levelFrame.classList.add('dd-image-ready');
  }
- // Legacy canvas art is retained as code only; image-backed worlds never render it.const visibleLevel=Math.min(world.to,Math.max(world.from,Math.min(progress.unlocked,TOTAL_LEVELS)));const minerPoint=positions[visibleLevel-world.from];
+ // Legacy canvas art is retained as code only; image-backed worlds never render it.
+ const visibleLevel=Math.min(world.to,Math.max(world.from,Math.min(progress.unlocked,TOTAL_LEVELS)));const minerPoint=positions[visibleLevel-world.from];
  // Keep the miner on-screen and to the side of the station instead of covering its number.
  const minerOffset=minerPoint[0]<19?7:-6;
  // Use safe landing spots in the newly illustrated biomes at their first level.
