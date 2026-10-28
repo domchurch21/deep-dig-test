@@ -1033,6 +1033,9 @@ function rebalanceMineLoot(){
  }
 }
 rebalanceMineLoot();
+// Resonance mechanic is introduced in later mines, not Mine 06.
+// Convert the two orphan triggers and single wall to ordinary dirt.
+MAPS[6]=MAPS[6].map(row=>row.replace(/[Cc]/g,'.'));
 validateMineRoutes();
 // Remove the redundant buried-treasure tile from every authored level.
 // Preserve the original star thresholds; replace only as many hidden finds
