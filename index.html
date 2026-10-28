@@ -1058,6 +1058,8 @@ for(let n=1;n<=TOTAL_LEVELS;n++){
 validateMineRoutes();
 // Preserve original thresholds calculated from the former point budgets.
 for(const row of DD_REMOVED_HIDDEN_REPORT)TARGETS[row.level]=row.stars;
+const DD_ROUTE_TEST_CAPS={"10":130,"11":290,"12":170,"13":240,"15":170,"16":250,"17":270,"18":240,"19":150,"20":200,"21":170,"23":170,"27":160,"28":140,"30":160,"38":70,"43":160,"44":170,"50":160};
+for(const [n,cap] of Object.entries(DD_ROUTE_TEST_CAPS))TARGETS[n]=TARGETS[n].map(v=>Math.min(v,cap));
 
 let progress={unlocked:1,best:{},stars:{}};
 let treasure={gold:0,claimed:{},starClaims:{},relics:{},chests:{},crystals:{}};
