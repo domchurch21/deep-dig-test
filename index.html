@@ -1043,8 +1043,9 @@ for(const n of [42,44,48,50]){
  const trigger=rows.flatMap((row,y)=>row.flatMap((tile,x)=>tile==='C'?[[x,y]]:[]))[0];
  const [tx,ty]=trigger;
  const wall=rows.flatMap((row,y)=>row.flatMap((tile,x)=>tile==='c'?[[x,y]]:[]))[0];
- if(!wall||ty+1>=H||rows[ty+1][tx]!=='#')throw Error('Unexpected resonance map layout in mine '+n);
- rows[wall[1]][wall[0]]='#';
+ if(!wall||ty+1>=H||!['.','#'].includes(rows[ty+1][tx]))throw Error('Unexpected resonance map layout in mine '+n);
+ const displaced=rows[ty+1][tx];
+ rows[wall[1]][wall[0]]=displaced;
  rows[ty+1][tx]='c';
  MAPS[n]=rows.map(row=>row.join(''));
 }
