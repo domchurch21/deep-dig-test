@@ -812,6 +812,14 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{d
 #workshopScreen .dd-pickaxe-tier.current{color:#ffdf9d}
 #workshopScreen .dd-pickaxe-buy{position:absolute;left:17%;top:80%;width:66%;height:9%;border:0;background:transparent;color:#4b210a;font-weight:900;font-size:clamp(13px,3.3vw,19px);cursor:pointer}
 #workshopScreen .dd-pickaxe-buy:disabled{opacity:.6;cursor:default}
+
+/* Pickaxe text alignment polish based on iPhone screenshot (TEST). */
+#workshopScreen .dd-pickaxe-stage{left:45%;top:23.5%;width:40%;font-size:clamp(14px,3.4vw,21px)}
+#workshopScreen .dd-pickaxe-stars{left:45%;top:29%;width:40%;font-size:clamp(16px,3.6vw,22px)}
+#workshopScreen .dd-pickaxe-description{left:46%;top:34%;width:36%;height:11.3%;overflow:hidden;font-size:clamp(10px,2.5vw,14px);line-height:1.24;font-weight:700;overflow-wrap:break-word}
+#workshopScreen .dd-pickaxe-next{top:56%;height:6%;font-size:clamp(11px,2.5vw,14px)}
+#workshopScreen .dd-pickaxe-tiers{top:65.5%;height:11%;}
+#workshopScreen .dd-pickaxe-tier{font-size:clamp(10px,2.6vw,15px);line-height:1.4;white-space:pre-line}
 </style></head><body><main>
 <section id="homeScreen" class="screen active" aria-label="Startmenü">
 <div class="dd-image-home" id="imageHome">
@@ -1231,10 +1239,10 @@ function renderWorkshopPreview(){
    add('div','dd-pickaxe-title',item.name);
    add('div','dd-pickaxe-stage','STUFE '+level+' / '+item.prices.length);
    add('div','dd-pickaxe-stars',Array.from({length:3},(_,i)=>i<level?'★':'☆').join(' '));
-   add('div','dd-pickaxe-description',item.desc);
+   add('div','dd-pickaxe-description',level===0?'Eine bessere Spitzhacke spart Energie beim Abbau von Felsen.':level===1?'Deine Spitzhacke spart bereits Energie beim Felsabbau.':level===2?'Mit dieser Spitzhacke baust du Felsen besonders sparsam ab.':'Maximal verbessert: Felsen abbauen kostet nur 1 Energie. Dazu erhältst du 2 Startenergie.');
    add('div','dd-pickaxe-next-title','NÄCHSTE VERBESSERUNG');
    add('div','dd-pickaxe-next',level>=item.prices.length?'★ Vollständig ausgebaut':item.effects[level]);
-   const tiers=add('div','dd-pickaxe-tiers');item.prices.forEach((price,i)=>{const tier=document.createElement('span');tier.className='dd-pickaxe-tier'+(i<level?' owned':i===level?' current':'');tier.textContent='S'+(i+1)+'\\n'+(i<level?'✓':price+' Gold');tiers.append(tier)});
+   const tiers=add('div','dd-pickaxe-tiers');item.prices.forEach((price,i)=>{const tier=document.createElement('span');tier.className='dd-pickaxe-tier'+(i<level?' owned':i===level?' current':'');tier.textContent='S'+(i+1)+'\n'+(i<level?'✓':price+' Gold');tiers.append(tier)});
    const buy=add('button','dd-pickaxe-buy',level>=item.prices.length?'MAXIMALE STUFE':treasure.gold<item.prices[level]?'ZU WENIG GOLD':'VERBESSERN · '+item.prices[level]+' GOLD');buy.type='button';buy.disabled=level>=item.prices.length||treasure.gold<item.prices[level];buy.addEventListener('click',()=>openPurchaseDialog(id));
    root.append(card);return;
   }
