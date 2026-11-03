@@ -795,6 +795,23 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{d
 #workshopScreen .dd-workshop-backpack{left:60%;top:24%;width:39%;height:28%}
 #workshopScreen .dd-workshop-lantern{left:2%;top:56%;width:41%;height:28%}
 #workshopScreen .dd-workshop-dynamite{left:60%;top:56%;width:39%;height:28%}
+
+/* Pickaxe-only artwork-driven upgrade menu, all text/buttons remain live DOM. */
+#workshopScreen .dd-workshop-overlay-panel:has(.dd-pickaxe-menu){width:min(98vw,520px);height:min(90vh,620px);max-height:90vh;padding:0;border:0;background:transparent;box-shadow:none;overflow:hidden;border-radius:0}
+#workshopScreen .dd-workshop-overlay-panel:has(.dd-pickaxe-menu) .dd-workshop-overlay-close{z-index:5;right:4%;top:5%;width:11%;height:10%;opacity:0}
+#workshopScreen .dd-workshop-overlay-panel:has(.dd-pickaxe-menu) #workshopMessage{position:absolute;bottom:1%;left:8%;width:84%;font-size:11px;text-align:center;pointer-events:none}
+#workshopScreen .dd-pickaxe-menu{position:relative;width:100%;height:100%;aspect-ratio:1184/1328;background:url("assets/deep_dig_spitzhacke_kaufmenue_v1.png?v=1") center / 100% 100% no-repeat;color:#4b260e;font-family:inherit}
+#workshopScreen .dd-pickaxe-title{position:absolute;left:27%;top:10%;width:46%;height:7%;display:grid;place-items:center;font-size:clamp(16px,4.7vw,27px);font-weight:900;color:#ffdf9d;text-shadow:2px 2px #3b1608}
+#workshopScreen .dd-pickaxe-stage{position:absolute;left:45%;top:23%;width:40%;text-align:center;font-size:clamp(14px,3.5vw,22px);font-weight:900}
+#workshopScreen .dd-pickaxe-stars{position:absolute;left:45%;top:29%;width:40%;text-align:center;font-size:clamp(16px,4vw,24px);font-weight:bold}
+#workshopScreen .dd-pickaxe-description{position:absolute;left:44%;top:35%;width:40%;height:12%;overflow:auto;font-size:clamp(10px,2.3vw,13px);line-height:1.25;font-weight:700}
+#workshopScreen .dd-pickaxe-next-title{position:absolute;left:26%;top:50%;width:48%;text-align:center;color:#ffe0a1;font-size:clamp(10px,2.5vw,15px);font-weight:900}
+#workshopScreen .dd-pickaxe-next{position:absolute;left:15%;top:56%;width:70%;height:6%;display:grid;place-items:center;text-align:center;color:#f9e0c6;font-size:clamp(10px,2.4vw,14px);line-height:1.15}
+#workshopScreen .dd-pickaxe-tiers{position:absolute;left:13%;top:66%;width:74%;height:10%;display:flex;justify-content:space-between;align-items:center}
+#workshopScreen .dd-pickaxe-tier{width:28%;text-align:center;white-space:pre-line;color:#e4d5cf;font-weight:900;font-size:clamp(10px,2.6vw,15px);line-height:1.35}
+#workshopScreen .dd-pickaxe-tier.current{color:#ffdf9d}
+#workshopScreen .dd-pickaxe-buy{position:absolute;left:17%;top:80%;width:66%;height:9%;border:0;background:transparent;color:#4b210a;font-weight:900;font-size:clamp(13px,3.3vw,19px);cursor:pointer}
+#workshopScreen .dd-pickaxe-buy:disabled{opacity:.6;cursor:default}
 </style></head><body><main>
 <section id="homeScreen" class="screen active" aria-label="Startmenü">
 <div class="dd-image-home" id="imageHome">
@@ -1208,6 +1225,19 @@ function renderWorkshopPreview(){
  for(const [idx,item] of WORKSHOP_PREVIEW.entries()){
   const id=WORKSHOP_IDS[idx],level=workshopLevels[id];
   if(window.ddSelectedWorkshop&&window.ddSelectedWorkshop!==id)continue;
+  if(id==='pickaxe'&&window.ddSelectedWorkshop==='pickaxe'){
+   const card=document.createElement('div');card.className='dd-pickaxe-menu';
+   const add=(tag,cls,value)=>{const e=document.createElement(tag);e.className=cls;if(value!==undefined)e.textContent=value;card.append(e);return e};
+   add('div','dd-pickaxe-title',item.name);
+   add('div','dd-pickaxe-stage','STUFE '+level+' / '+item.prices.length);
+   add('div','dd-pickaxe-stars',Array.from({length:3},(_,i)=>i<level?'★':'☆').join(' '));
+   add('div','dd-pickaxe-description',item.desc);
+   add('div','dd-pickaxe-next-title','NÄCHSTE VERBESSERUNG');
+   add('div','dd-pickaxe-next',level>=item.prices.length?'★ Vollständig ausgebaut':item.effects[level]);
+   const tiers=add('div','dd-pickaxe-tiers');item.prices.forEach((price,i)=>{const tier=document.createElement('span');tier.className='dd-pickaxe-tier'+(i<level?' owned':i===level?' current':'');tier.textContent='S'+(i+1)+'\\n'+(i<level?'✓':price+' Gold');tiers.append(tier)});
+   const buy=add('button','dd-pickaxe-buy',level>=item.prices.length?'MAXIMALE STUFE':treasure.gold<item.prices[level]?'ZU WENIG GOLD':'VERBESSERN · '+item.prices[level]+' GOLD');buy.type='button';buy.disabled=level>=item.prices.length||treasure.gold<item.prices[level];buy.addEventListener('click',()=>openPurchaseDialog(id));
+   root.append(card);return;
+  }
   const card=document.createElement('div');card.className='workshop-item';
   const art=document.createElement('div');art.className='workshop-icon';art.textContent=item.icon;art.setAttribute('aria-hidden','true');
   const info=document.createElement('div'),title=document.createElement('div');title.className='workshop-name';title.textContent=item.name+' · STUFE '+level+' / '+item.prices.length;
